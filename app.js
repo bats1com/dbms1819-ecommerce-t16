@@ -59,9 +59,9 @@ app.get('/member/2', function(req,res) {
 		hobbies: ['games', 'watch']
 	});
 });
-/*
+
 app.listen(3000,function() {
 	console.log('Server started at port 3000');
 });
-*/
+
 app.listen(PORT);
