@@ -46,7 +46,7 @@ app.get('/member/1', function(req,res) {
 		email: 'jdvista96@gmail.com',
 		phone: '09423454782',
 		imageurl: '/jomar.jpg',
-		hobbies: ['music', 'games']
+		hobbies: ['Listening to music', 'Playing computer games']
 	});
 });
 
@@ -56,7 +56,7 @@ app.get('/member/2', function(req,res) {
 		email: 'drobscortz@gmail.com',
 		phone: '09971960972',
 		imageurl: '/daniel.jpg',
-		hobbies: ['games', 'watch']
+		hobbies: ['Playing computer games', 'Watching youtube videos']
 	});
 });
 
