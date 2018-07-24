@@ -66,7 +66,7 @@ app.get('/', function(req,res) {
 
 	client.query('SELECT * FROM Products', (req, data)=>{
 		var list = [];
-		for (var i = 0; i <= 1; i++) {
+		for (var i = 0; i < 1; i++) {
 			list.push(data.rows[i]);
 		}
 		//add render here
