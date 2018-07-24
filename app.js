@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { Client } = require('pg');
+//const { Client } = require('pg');
 const exphbs = require('express-handlebars');
 const PORT = process.env.PORT || 5000
 
