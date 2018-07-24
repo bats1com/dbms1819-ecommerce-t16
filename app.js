@@ -12,7 +12,6 @@ const client = new Client({
 	host: 'ec2-54-204-23-228.compute-1.amazonaws.com',
 	port: 5432
 });
-*/
 const client = new Client({
 	database: 'storedb',
 	user: 'postgres',
@@ -20,6 +19,7 @@ const client = new Client({
 	host: 'localhost',
 	port: 5432
 });
+*/
 
 /*
 CREATE TABLE Products(id SERIAL PRIMARY KEY, name varchar(80), type varchar(80), description varchar(200), brand varchar(80), price float(2), pic varchar(80));
