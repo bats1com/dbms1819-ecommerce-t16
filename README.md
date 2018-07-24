@@ -1,2 +1,2 @@
-# vistacortez51a2
-Assignment 2 for DBMS
+# dbms1819-m1t16
+Module 1: E-Commerce WebApp v1
