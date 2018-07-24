@@ -43,16 +43,18 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 app.get('/', function(req,res) {
-	client.query('SELECT * FROM Products', (req, data)=>{
+
+	/*client.query('SELECT * FROM Products', (req, data)=>{
 		var list = [];
 		for (var i = 0; i <= 1; i++) {
 			list.push(data.rows[i]);
 		}
+		//add render here
+	})*/
 		res.render('home',{
-			title: 'Top Products',
-			data: list
+			title: 'Top Products'//,
+			//data: list
 		});
-	})
 });
 
 app.get('/products', function(req,res) {
