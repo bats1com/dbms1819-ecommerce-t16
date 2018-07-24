@@ -24,7 +24,6 @@ const client = new Client({
 /*
 CREATE TABLE Products(id SERIAL PRIMARY KEY, name varchar(80), type varchar(80), description varchar(200), brand varchar(80), price float(2), pic varchar(80));
 INSERT INTO Products(name, type, description, brand, price) VALUES('Model 3', 'IEM', 'An In-Ear Monitor with a single dynamic driver.', 'ADVANCED', 4100.00);
-*/
 //connect to database
 
 client.connect()
@@ -34,6 +33,7 @@ client.connect()
 	.catch(function() {
 		console.log('Error');
 	})
+*/
 
 
 const app = express();
