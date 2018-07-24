@@ -1,18 +1,19 @@
 const express = require('express');
 const path = require('path');
-//const { Client } = require('pg');
+const { Client } = require('pg');
 //const pg = require('pg');
 const exphbs = require('express-handlebars');
 const PORT = process.env.PORT || 5000
 
-/*
 const client = new Client({
 	database: 'ddmihcu0i9oh4g',
 	user: 'wagrbiqjyejffc',
 	password: '3352d8150a25ae9b72764c1ec8c20576e8bc0c9d64a07224a2d18db21af77846',
 	host: 'ec2-54-204-23-228.compute-1.amazonaws.com',
-	port: 5432
+	port: 5432,
+	ssl: true
 });
+/*
 const client = new Client({
 	database: 'storedb',
 	user: 'postgres',
@@ -22,6 +23,7 @@ const client = new Client({
 });
 */
 
+client.connect();
 
 /*
 const connectionString = "postgres://wagrbiqjyejffc:3352d8150a25ae9b72764c1ec8c20576e8bc0c9d64a07224a2d18db21af77846@ec2-54-204-23-228.compute-1.amazonaws.com:5432/ddmihcu0i9oh4g"
@@ -38,7 +40,7 @@ CREATE TABLE Products(id SERIAL PRIMARY KEY, name varchar(80), type varchar(80),
 INSERT INTO Products(name, type, description, brand, price) VALUES('Model 3', 'IEM', 'An In-Ear Monitor with a single dynamic driver.', 'ADVANCED', 4100.00);
 //connect to database
 
-client.connect()
+client.connect();
 	.then(function() {
 		console.log('connected to database!');
 	})
@@ -62,21 +64,22 @@ app.set('view engine', 'handlebars');
 
 app.get('/', function(req,res) {
 
-	/*
 	client.query('SELECT * FROM Products', (req, data)=>{
 		var list = [];
 		for (var i = 0; i <= 1; i++) {
 			list.push(data.rows[i]);
 		}
 		//add render here
-	})
-	*/
 		res.render('home',{
 			/*
-			data: list,
 			*/
+			data: list,
 			title: 'Top Products'
 		});
+		client.end();
+	})
+	/*
+	*/
 });
 
 app.get('/products', function(req,res) {
