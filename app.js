@@ -76,7 +76,7 @@ app.get('/', function(req,res) {
 			data: list,
 			title: 'Top Products'
 		});
-		client.end();
+		//client.end();
 	})
 	/*
 	*/
