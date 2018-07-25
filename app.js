@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
 const { Client } = require('pg');
-//const pg = require('pg');
 const exphbs = require('express-handlebars');
+const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
 const PORT = process.env.PORT || 5000
 
 const client = new Client({
@@ -23,8 +24,13 @@ const client = new Client({
 });
 */
 
-client.connect();
-
+client.connect()
+	.then(function() {
+		console.log('connected to database!');
+	})
+	.catch(function() {
+		console.log('Error');
+	})
 /*
 CREATE TABLE Products(id SERIAL PRIMARY KEY, name varchar(80), type varchar(80), description varchar(300), brand varchar(80), price float(2), pic varchar(80));
 INSERT INTO Products(name, type, description, brand, price, pic) VALUES('Genesis', 'Custom In-Ear Monitor', 'FlipEars Genesis is a single balanced armature driver custom in-ear monitors. It is an amazing entry-level CIEM, it is incomparable to other single driver IEMs.', 'Flipears', 8, '/genesis.jpg');
@@ -44,24 +50,21 @@ client.connect();
 		console.log('Error');
 	})
 
-	client.query('SELECT * FROM your_table', function(err, result) {
-      done();
-      if(err) return console.error(err);
-      console.log(result.rows);
-   });
 */
-
-
+//View engine setup
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
+
+//Body Parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 
 app.get('/', function(req,res) {
 	client.query('SELECT * FROM Products', (req, data)=>{
 		var list = [];
-		//var length = data.rows.length;
 		for (var i = 0; i < data.rows.length; i++) {
 			list.push(data.rows[i]);
 		}
@@ -72,12 +75,10 @@ app.get('/', function(req,res) {
 	});
 });
 
-
-app.get('/products/:id', function(req,res) {
+app.get('/products/:id', (req,res)=>{
 	var id = req.params.id;
 	client.query('SELECT * FROM Products', (req, data)=>{
 		var list = [];
-		///var length = data.rows.length + 1;
 		for (var i = 0; i < data.rows.length+1; i++) {
 			if (i==id) {
 				list.push(data.rows[i-1]);
@@ -87,6 +88,62 @@ app.get('/products/:id', function(req,res) {
 			data: list
 		});
 	});
+});
+
+app.post('/products/:id/send', function(req, res) {
+	console.log(req.body);
+	var id = req.params.id;
+	const output = `
+		<p>You have a new contact request</p>
+		<h3>Contact Details</h3>
+		<ul>
+			<li>Customer Name: ${req.body.name}</li>
+			<li>Phone ${req.body.phone}</li>
+			<li>Email: ${req.body.email}</li>
+			<li>Product ID: ${req.body.productid}</li>
+			<li>Quantity ${req.body.quantity}</li>
+		</ul>
+	`;
+
+	//nodemailer
+	let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: 'iemaniamailer@gmail.com', 
+            pass: 'custominearmonitors' 
+        }
+    });
+
+    let mailOptions = {
+        from: '"IEMania Mailer" <iemaniamailer@gmail.com>',
+        to: 'jdvista96@gmail.com, killerbats1com@gmail.com',
+        subject: 'IEMania Contact Request',
+        //text: req.body.name,
+        html: output
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+        client.query('SELECT * FROM Products', (req, data)=>{
+			var list = [];
+			for (var i = 0; i < data.rows.length+1; i++) {
+				if (i==id) {
+					list.push(data.rows[i-1]);
+				}
+			}
+			res.render('products',{
+				data: list,
+				msg: '---Email has been sent---'
+			});
+		});
+     });
 });
 
 app.get('/member/1', function(req,res) {
