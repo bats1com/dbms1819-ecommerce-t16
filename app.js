@@ -118,7 +118,7 @@ app.post('/products/:id/send', function(req, res) {
 
     let mailOptions = {
         from: '"IEMania Mailer" <iemaniamailer@gmail.com>',
-        to: 'jdvista96@gmail.com, killerbats1com@gmail.com',
+        to: 'jdvista96@gmail.com, killerbats1com@gmail.com, drobscortz@gmail.com',
         subject: 'IEMania Contact Request',
         //text: req.body.name,
         html: output
