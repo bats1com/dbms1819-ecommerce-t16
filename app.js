@@ -39,17 +39,6 @@ INSERT INTO Products(name, type, description, brand, price, pic) VALUES('Trident
 INSERT INTO Products(name, type, description, brand, price, pic) VALUES('A6t', 'Custom In-Ear Monitor', 'The A6t builds off of our exceptional 6-driver design that quickly became the “in-ear monitor of choice” for touring musicians and discerning music lovers.', '64 Audio', 65,'/a6t.jpg');
 INSERT INTO Products(name, type, description, brand, price, pic) VALUES('Legend X', 'Custom In-Ear Monitor', 'From its arsenal of 7 proprietary drivers to its industry leading, state-of-the-art 10-way synX crossover network, the Legend X is the culmination of everything extraordinary we do at Empire.', 'Empire Ears', 115,'/legend-x.jpg');
 INSERT INTO Products(name, type, description, brand, price, pic) VALUES('Layla', 'Custom In-Ear Monitor', 'Layla is perfection, perfected. This IEM will replicate detail of instruments in a way that makes it feel like the musicians are in the room with you. Layla uses custom-made Pproprietary Balanced Armature Drivers with a 12 Driver configuration.', 'JH Audio', 150,'/layla.jpg');
-
-//connect to database
-
-client.connect();
-	.then(function() {
-		console.log('connected to database!');
-	})
-	.catch(function() {
-		console.log('Error');
-	})
-
 */
 //View engine setup
 const app = express();
@@ -109,7 +98,7 @@ app.post('/products/:id/send', function(req, res) {
 	let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
-        secure: true, // true for 465, false for other ports
+        secure: true,
         auth: {
             user: 'iemaniamailer@gmail.com', 
             pass: 'custominearmonitors' 
