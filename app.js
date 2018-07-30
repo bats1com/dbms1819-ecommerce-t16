@@ -90,7 +90,7 @@ app.post('/products/:id/send', function(req, res) {
 			<li>Phone: ${req.body.phone}</li>
 			<li>Email: ${req.body.email}</li>
 			<li>Product ID: ${req.body.productid}</li>
-			<li>Quantity ${req.body.quantity}</li>
+			<li>Quantity: ${req.body.quantity}</li>
 		</ul>
 	`;
 
