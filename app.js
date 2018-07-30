@@ -96,17 +96,17 @@ app.post('/products/:id/send', function(req, res) {
 
 	//nodemailer
 	let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
+        host: 'smtp.mail.yahoo.com',
         port: 465,
         secure: true,
         auth: {
-            user: 'iemaniamailer@gmail.com', 
+            user: 'iemaniamailer@yahoo.com', 
             pass: 'custominearmonitors' 
         }
     });
 
     let mailOptions = {
-        from: '"IEMania Mailer" <iemaniamailer@gmail.com>',
+        from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
         to: 'jdvista96@gmail.com, killerbats1com@gmail.com, drobscortz@gmail.com',
         subject: 'IEMania Contact Request',
         //text: req.body.name,
