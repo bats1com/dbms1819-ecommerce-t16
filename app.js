@@ -101,7 +101,7 @@ app.post('/products/:id/send', function(req, res) {
         secure: true,
         auth: {
             user: 'iemaniamailer@yahoo.com', 
-            pass: 'custominearmonitors' 
+            pass: 'custominearmonitor' 
         }
     });
 
