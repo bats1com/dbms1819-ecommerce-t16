@@ -101,7 +101,7 @@ app.post('/products/:id/send', function(req, res) {
         secure: true,
         auth: {
             user: 'iemaniamailer@google.com', 
-            pass: 'custominearmonitors' 
+            pass: 'custominearmonitor' 
             /*
         host: 'smtp.mail.yahoo.com'
             user: 'iemaniamailer@yahoo.com', 
