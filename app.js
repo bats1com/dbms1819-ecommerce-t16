@@ -96,16 +96,16 @@ app.post('/products/:id/send', function(req, res) {
 
 	//nodemailer
 	let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
+        host: 'smtp.mail.yahoo.com',
         port: 465,
         secure: true,
         auth: {
-            user: 'iemaniamailer@google.com', 
-            pass: 'custominearmonitor' 
-            /*
-        host: 'smtp.mail.yahoo.com'
             user: 'iemaniamailer@yahoo.com', 
             pass: 'custominearmonitor' 
+            /*
+            user: 'iemaniamailer@google.com', 
+            pass: 'custominearmonitor' 
+        host: 'smtp.mail.yahoo.com'
             */
         }
     });
