@@ -23,7 +23,6 @@ const client = new Client({
 	port: 5432
 });
 */
-
 client.connect()
 	.then(function() {
 		console.log('connected to database!');
@@ -31,6 +30,7 @@ client.connect()
 	.catch(function() {
 		console.log('Error');
 	})
+
 /*
 CREATE TABLE Products(id SERIAL PRIMARY KEY, name varchar(80), type varchar(80), description varchar(300), brand varchar(80), price float(2), pic varchar(80));
 INSERT INTO Products(name, type, description, brand, price, pic) VALUES('Genesis', 'Custom In-Ear Monitor', 'FlipEars Genesis is a single balanced armature driver custom in-ear monitors. It is an amazing entry-level CIEM, it is incomparable to other single driver IEMs.', 'Flipears', 8, '/genesis.jpg');
@@ -45,7 +45,6 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
-
 //Body Parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -77,6 +76,11 @@ app.get('/products/:id', (req,res)=>{
 			data: list
 		});
 	});
+});
+
+app.get('/edit', (req,res)=>{
+	var id = req.params.id;
+	res.render('edit');
 });
 
 app.post('/products/:id/send', function(req, res) {
