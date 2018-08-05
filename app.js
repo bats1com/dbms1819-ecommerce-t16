@@ -13,7 +13,6 @@ const client = new Client({
 	host: 'ec2-54-204-23-228.compute-1.amazonaws.com',
 	port: 5432,
 	ssl: true
-	//as
 });
 /*
 const client = new Client({

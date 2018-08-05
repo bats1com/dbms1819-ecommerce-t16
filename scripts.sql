@@ -13,7 +13,7 @@ CREATE TABLE "customers" (
 CREATE TABLE "brands" (
   "id" SERIAL PRIMARY KEY,
   "brand_name" VARCHAR(80),
-  "description" VARCHAR(1000)
+  "brand_description" VARCHAR(1000)
 );
 
 CREATE TABLE "products_category" (
