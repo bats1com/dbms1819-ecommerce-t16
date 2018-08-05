@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const PORT = process.env.PORT || 5000
 
-/*
 const client = new Client({
 	database: 'ddmihcu0i9oh4g',
 	user: 'wagrbiqjyejffc',
@@ -16,7 +15,7 @@ const client = new Client({
 	ssl: true
 	//as
 });
-*/
+/*
 const client = new Client({
 	database: 'storedb',
 	user: 'postgres',
@@ -24,6 +23,7 @@ const client = new Client({
 	host: 'localhost',
 	port: 5432
 });
+*/
 client.connect()
 	.then(function() {
 		console.log('connected to database!');
