@@ -42,7 +42,7 @@
 				<div class="form-group">
 					<label class="control-label" for="category_id">Product Category *</label>
 					<div class="text-center">
-						<select name="product_categories" class="form-control">
+						<select name="category_id" class="form-control" required="">
 							<option value="">Choose one..</option>
 						{{#each data}}
 						 	<option value="{{this.id}}">{{this.category_name}}</option>
@@ -53,8 +53,8 @@
 				<div class="form-group">
 					<label class="control-label" for="brand_id">Brand *</label>
 					<div class="text-center">
-						<select name="brands" class="form-control" type="number">
-							<option value='0'>Choose one..</option>
+						<select name="brand_id" class="form-control" required="">
+							<option value=''>Choose one..</option>
 						{{#each data2}}
 						 	<option value='{{this.id}}'>{{this.brand_name}}</option>
 						 {{/each}}
