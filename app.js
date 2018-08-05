@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.get('/', function(req,res) {
+app.get('/', function(req,res) { //product list
 	client.query('SELECT * FROM products ORDER BY products.id', (req, data)=>{
 		var list = [];
 		for (var i = 0; i < data.rows.length; i++) {
@@ -53,10 +53,43 @@ app.get('/', function(req,res) {
 			title: 'Top Products'
 		});
 	});
-	/*
-	client.query('SELECT * FROM products_m1', (req, data)=>{
+});
+
+app.get('/product/create', (req,res)=>{	//CREATE PRODUCT html
+	client.query('SELECT * FROM products_category', (req, data)=>{
 		var list = [];
-		for (var i = 0; i < data.rows.length; i++) {
+		for (var i = 1; i < data.rows.length+1; i++) {
+				list.push(data.rows[i-1]);
+		}
+		client.query('SELECT * FROM brands', (req, data)=>{
+			var list2 = [];
+			for (var i = 1; i < data.rows.length+1; i++) {
+					list2.push(data.rows[i-1]);
+			}
+			res.render('product_create',{
+				data: list,
+				data2: list2
+			});
+		});
+	});
+});
+
+app.post('/', function(req,res) { //product list with insert new product
+	var values =[];
+	values = [req.body.product_name,req.body.product_description,req.body.tagline,req.body.price,req.body.warranty,req.body.pic,req.body.category_id,req.body.brand_id];
+	//console.log(req.body);
+	//console.log(values);
+	client.query("INSERT INTO products(product_name, product_description, tagline, price, warranty, pic, category_id, brand_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)", values, (err, res)=>{
+		if (err) {
+			console.log(err.stack)
+			}
+		else {
+			console.log(res.rows[0])
+		}
+	});
+	client.query('SELECT * FROM products ORDER BY products.id', (req, data)=>{
+		var list = [];
+		for (var i = 1; i < data.rows.length; i++) {
 			list.push(data.rows[i]);
 		}
 		res.render('home',{
@@ -64,7 +97,6 @@ app.get('/', function(req,res) {
 			title: 'Top Products'
 		});
 	});
-	*/
 });
 
 app.get('/products/:id', (req,res)=>{
@@ -164,28 +196,9 @@ app.get('/member/2', function(req,res) {
 	});
 });
 
-//------------------MODULE 2 additions----------------------------------------------
-//BRANDS
-app.get('/brand/create', (req,res)=>{
-	res.render('brand_create');
-});
-
-app.get('/brands', (req,res)=>{
-	client.query('SELECT * FROM brands', (req, data)=>{
-		var list = [];
-		for (var i = 1; i < data.rows.length+1; i++) {
-				list.push(data.rows[i-1]);
-		}
-		res.render('brands',{
-			data: list
-		});
-	});
-});
-
-app.post('/brands', (req,res)=>{
+app.post('/brands', function(req,res) { //brand list insert 
 	var values =[];
 	values = [req.body.brand_name,req.body.brand_description];
-
 	console.log(req.body);
 	console.log(values);
 	client.query("INSERT INTO brands(brand_name, brand_description) VALUES($1, $2)", values, (err, res)=>{
@@ -206,24 +219,26 @@ app.post('/brands', (req,res)=>{
 		});
 	});
 });
-//CATEGORIES
-app.get('/category/create', (req,res)=>{
-	res.render('category_create');
-});
 
-app.get('/categories', (req,res)=>{
-	client.query('SELECT * FROM products_category', (req, data)=>{
+app.get('/brands', (req,res)=>{ //brand list
+	client.query('SELECT * FROM brands', (req, data)=>{
 		var list = [];
 		for (var i = 1; i < data.rows.length+1; i++) {
 				list.push(data.rows[i-1]);
 		}
-		res.render('categories',{
+		res.render('brands',{
 			data: list
 		});
 	});
 });
 
-app.post('/categories', (req,res)=>{
+app.get('/brand/create', (req,res)=>{ //route to create brand html
+	res.render('brand_create');
+});
+
+
+
+app.post('/categories', function(req,res){ //category list with insert new category query
 	var values =[];
 	values = [req.body.category_name];
 	console.log(req.body);
@@ -247,48 +262,21 @@ app.post('/categories', (req,res)=>{
 	});
 });
 
-app.get('/product/create', (req,res)=>{
+
+app.get('/categories', (req,res)=>{ //category list
 	client.query('SELECT * FROM products_category', (req, data)=>{
 		var list = [];
 		for (var i = 1; i < data.rows.length+1; i++) {
 				list.push(data.rows[i-1]);
 		}
-		client.query('SELECT * FROM brands', (req, data)=>{
-			var list2 = [];
-			for (var i = 1; i < data.rows.length+1; i++) {
-					list2.push(data.rows[i-1]);
-			}
-			res.render('product_create',{
-				data: list,
-				data2: list2
-			});
+		res.render('categories',{
+			data: list
 		});
 	});
 });
 
-app.post('/', function(req,res) {
-	var values =[];
-	values = [req.body.product_name,req.body.product_description,req.body.tagline,req.body.price,req.body.warranty,req.body.pic,req.body.category_id,req.body.brand_id];
-	//console.log(req.body);
-	//console.log(values);
-	client.query("INSERT INTO products(product_name, product_description, tagline, price, warranty, pic, category_id, brand_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)", values, (err, res)=>{
-		if (err) {
-			console.log(err.stack)
-			}
-		else {
-			console.log(res.rows[0])
-		}
-	});
-	client.query('SELECT * FROM products ORDER BY products.id', (req, data)=>{
-		var list = [];
-		for (var i = 1; i < data.rows.length; i++) {
-			list.push(data.rows[i]);
-		}
-		res.render('home',{
-			data: list,
-			title: 'Top Products'
-		});
-	});
+app.get('/category/create', (req,res)=>{ //route to create category
+	res.render('category_create');
 });
 
 app.get('/product/update/:id', (req,res)=>{
@@ -322,7 +310,7 @@ app.get('/product/update/:id', (req,res)=>{
 	});
 });
 
-app.post('/products/:id', (req,res)=>{
+app.post('/products/:id', function(req,res){
 	console.log(req.body);
 	var id = req.params.id;
 	var values =[];
