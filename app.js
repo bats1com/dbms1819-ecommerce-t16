@@ -77,7 +77,7 @@ app.post('/', function(req,res) { //product list with insert new product
 	var values =[];
 	values = [req.body.product_name,req.body.product_description,req.body.tagline,req.body.price,req.body.warranty,req.body.pic,req.body.category_id,req.body.brand_id];
 	//console.log(req.body);
-	//console.log(values);
+	console.log(values);
 	client.query("INSERT INTO products(product_name, product_description, tagline, price, warranty, pic, category_id, brand_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)", values, (err, res)=>{
 		if (err) {
 			console.log(err.stack)
