@@ -23,6 +23,7 @@ const client = new Client({
 	port: 5432
 });
 */
+
 client.connect()
 	.then(function() {
 		console.log('connected to database!');
@@ -85,7 +86,9 @@ app.post('/', function(req,res) { //product list with insert new product
 		else {
 			console.log(res.rows[0])
 		}
+		res.redirect('/');
 	});
+	/*
 	client.query('SELECT * FROM products ORDER BY products.id', (req, data)=>{
 		var list = [];
 		for (var i = 0; i < data.rows.length; i++) {
@@ -96,6 +99,7 @@ app.post('/', function(req,res) { //product list with insert new product
 			title: 'Top Products'
 		});
 	});
+	*/
 });
 
 app.get('/products/:id', (req,res)=>{
@@ -208,15 +212,7 @@ app.post('/brands', function(req,res) { //brand list insert
 			console.log(res.rows[0])
 		}
 	});
-	client.query('SELECT * FROM brands', (req, data)=>{
-		var list = [];
-		for (var i = 1; i < data.rows.length+1; i++) {
-				list.push(data.rows[i-1]);
-		}
-		res.render('brands',{
-			data: list
-		});
-	});
+	res.redirect('/brands');
 });
 
 app.get('/brands', (req,res)=>{ //brand list
@@ -250,15 +246,7 @@ app.post('/categories', function(req,res){ //category list with insert new categ
 			console.log(res.rows[0])
 		}
 	});
-	client.query('SELECT * FROM products_category', (req, data)=>{
-		var list = [];
-		for (var i = 1; i < data.rows.length+1; i++) {
-				list.push(data.rows[i-1]);
-		}
-		res.render('categories',{
-			data: list
-		});
-	});
+	res.redirect('/categories');
 });
 
 
@@ -318,19 +306,7 @@ app.post('/products/:id', function(req,res){
 	//for updating via post -----------------------------------------------------WIP
 	console.log(values);
 	client.query('UPDATE products SET product_name = $2, product_description = $3, tagline = $4, price = $5, warranty = $6, pic = $7, category_id = $8, brand_id = $9 WHERE id = $1', values);
-	client.query('SELECT products.id, products.product_name, products.product_description, products.tagline, products.price, products.warranty, products.pic, products.category_id, products_category.category_name, products.brand_id, brands.brand_name FROM products INNER JOIN products_category ON products.category_id = products_category.id INNER JOIN brands ON products.brand_id = brands.id ORDER BY products.id' , (req, data)=>{
-		var list = [];
-		//console.log(data);
-		for (var i = 0; i < data.rows.length+1; i++) {
-			if (i==id) {
-				list.push(data.rows[i-1]);
-			}
-		}
-		//console.log(list);
-		res.render('products',{
-			data: list
-		});
-	});
+	res.redirect('/products/:id');
 });
 
 app.listen(3000,function() {
