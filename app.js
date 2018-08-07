@@ -86,8 +86,8 @@ app.post('/', function(req,res) { //product list with insert new product
 		else {
 			console.log(res.rows[0])
 		}
-		res.redirect('/');
 	});
+	res.redirect('/');
 	/*
 	client.query('SELECT * FROM products ORDER BY products.id', (req, data)=>{
 		var list = [];
