@@ -306,7 +306,7 @@ app.post('/products/:id', function(req,res){
 	//for updating via post -----------------------------------------------------WIP
 	console.log(values);
 	client.query('UPDATE products SET product_name = $2, product_description = $3, tagline = $4, price = $5, warranty = $6, pic = $7, category_id = $8, brand_id = $9 WHERE id = $1', values);
-	res.redirect('/products/:id');
+	res.redirect('/products/'+id);
 });
 
 app.listen(3000,function() {
