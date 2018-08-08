@@ -168,19 +168,7 @@ app.post('/products/:id/send', function(req, res) {
 				}
 				//console.log(list);
 				//res.redirect('/products/'+id);
-				res.redirect('/products/'+id);
-				/*
-				res.render('products', {
-					data: list,
-					msg:"---Email already exists---"
-				});
-				res.redirect(url.format({
-					pathname:'/products/'+id,
-					query: {
-						msg: "---Email already exists---"
-					}
-				}));
-				*/
+				res.redirect('/products/'+id+'/email-exists');
 			});
 		}
 		else {
@@ -253,15 +241,29 @@ app.post('/products/:id/send', function(req, res) {
 							        }
 							        console.log('Message sent: %s', info.messageId);
 							        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-
-									res.redirect('/products/'+id);    //---change this
 							     });
 							});
+							res.redirect('/products/'+id+'/send');    //---change this
 						}
 					});
 				}
 			});
 		}
+	});
+});
+
+app.get('/products/:id/send', function(req,res) {
+	var id = req.params.id;
+	res.render('email', {
+		message: 'Email Sent!'
+		PID: id;
+	});
+});
+
+app.get('/products/:id/email-exists', function(req,res) {
+	res.render('email', {
+		message: 'Email already exists!'
+		PID: id; 
 	});
 });
 
