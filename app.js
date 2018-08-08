@@ -255,15 +255,15 @@ app.post('/products/:id/send', function(req, res) {
 app.get('/products/:id/send', function(req,res) {
 	var id = req.params.id;
 	res.render('email', {
-		message: 'Email Sent!'
-		PID: id;
+		message: 'Email Sent!',
+		PID: id
 	});
 });
 
 app.get('/products/:id/email-exists', function(req,res) {
 	res.render('email', {
-		message: 'Email already exists!'
-		PID: id; 
+		message: 'Email already exists!',
+		PID: id
 	});
 });
 
