@@ -174,7 +174,7 @@ app.post('/products/:id/send', function(req, res) {
 		else {
 			console.log("not exist");
 			console.log(customers_values);
-			client.query('INSERT INTO customers(email, first_name, last_name, street, municipality, province, zipcode) VALUES($1, $2, $3, $4, $5, $6, $7)', customers_values, (err,res)=> {
+			client.query('INSERT INTO customers(email, first_name, last_name, street, municipality, province, zipcode) VALUES($1, $2, $3, $4, $5, $6, $7)', customers_values, (err,data)=> {
 				if (err) {
 					console.log(err.stack)
 				}
