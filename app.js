@@ -133,7 +133,7 @@ app.post('/products/:id/send', function(req, res) {
 		<p>You have a new Order Request!</p>
 		<h3>Order Details</h3>
 		<ul>
-			<li>Customer Name: ${req.body.first_name} $(req.body.last_name}</li>
+			<li>Customer Name: ${req.body.first_name} ${req.body.last_name}</li>
 			<li>Email: ${req.body.email}</li>
 			<li>Address: ${req.body.street} ${req.body.municipality} ${req.body.province} ${req.body.zipcode}</li>
 			<li>Product ID: ${req.body.product_id}</li>
@@ -188,7 +188,7 @@ app.post('/products/:id/send', function(req, res) {
 							console.log("got customer id");
 							orders_values[2] = data.rows[0].lastval;
 							console.log(orders_values+"<====")
-							client.query('INSERT INTO orders(product_id, quantity, customer_id) VALUES($1, $2, $3)', orders_values, (req,res)=> {
+							client.query('INSERT INTO orders(product_id, quantity, customer_id) VALUES($1, $2, $3)', orders_values, (req,data)=> {
 								//nodemailer
 								let transporter = nodemailer.createTransport({
 							      	host: 'smtp.mail.yahoo.com',
