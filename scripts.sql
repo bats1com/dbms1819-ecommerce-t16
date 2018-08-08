@@ -7,7 +7,6 @@ CREATE TABLE "customers" (
   "municipality" VARCHAR(80),
   "province" VARCHAR(80),
   "zipcode" VARCHAR(80)
-  
 );
 
 CREATE TABLE "brands" (
