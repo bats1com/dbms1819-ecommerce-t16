@@ -1,17 +1,15 @@
 <div class="container">
 	<div class="jumbotron mt-2">
-		{{#each data2}}
 		<div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
 			<div class="card bg-secondary text-light center">
 			<h3 class="mt-3 text-center">{{first_name}} {{last_name}}</h3>
 				<div class="card-body">
-					<h5 class="card-title">Customer ID: {{this.customer_id}}</h5>
-					<h5 class="card-title">Email: {{this.email}}</h5>
+					<h5 class="card-title">Customer ID: {{customer_id}}</h5>
+					<h5 class="card-title">Email: {{email}}</h5>
 					<h5 class="card-title">Address: {{this.street}} {{this.municipality}} {{this.province}} {{this.zipcode}}</h5>
 				</div>
 			</div>
 		</div>
-		{{/each}}
 	</div>
 	<div class="jumbotron jumbotron-fluid mt-2">
 		<h5 align="center">Orders</h5>

@@ -469,8 +469,12 @@ app.get('/customers/:id', (req,res)=>{
 			data.rows[0];
 			res.render('customer_details',{
 				data: list,
-				first_name: list.first_name[0],
-				last_name: list.last_name[0]
+				first_name: list[0].first_name,
+				last_name: list[0].last_name,
+				customer_id: list[0].customer_id,
+				email: list[0].email,
+				street: list[0].street
+
 			});
 		}
 	});
