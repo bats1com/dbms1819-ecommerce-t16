@@ -473,7 +473,10 @@ app.get('/customers/:id', (req,res)=>{
 				last_name: list[0].last_name,
 				customer_id: list[0].customer_id,
 				email: list[0].email,
-				street: list[0].street
+				street: list[0].street,
+				municipality: list[0].municipality,
+				province: list[0].province,
+				zipcode: list[0].zipcode
 
 			});
 		}
