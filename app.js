@@ -467,6 +467,11 @@ app.get('/customers/:id', (req,res)=>{
 				list.push(data.rows[i-1]);
 			}
 			data.rows[0];
+			client.query('SELECT id FROM orders WHERE customer_id=$1 ORDER BY id', [id],(req,data2)=>{
+				for (var i = 1; i < data.rows.length+1; i++) {
+					list2.push(data2.rows[i-1]);
+				}
+			});
 			res.render('customer_details',{
 				data: list,
 				first_name: list[0].first_name,
