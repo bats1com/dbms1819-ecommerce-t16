@@ -463,7 +463,9 @@ app.get('/customers/:id', (req,res)=>{
 		else{
 			var list = [];
 			console.log(data.rows);
-			list.push(data.rows[0]);
+			for (var i = 1; i < data.rows.length+1; i++) {
+				list.push(data.rows[i-1]);
+			}
 			res.render('customer_details',{
 				data: list
 			});
