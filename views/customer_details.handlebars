@@ -24,7 +24,9 @@
 				</tr>
 				{{#each data}}
 				<tr>
-					<td>{{this.orders.id}}</td>
+					{{#each data2}}
+					<td>{{this.id}}</td>
+					{{/each}}
 					<td>{{this.order_date}}</td>
 					<td>{{this.product_id}}</td>
 					<td>{{this.product_name}}</td>
