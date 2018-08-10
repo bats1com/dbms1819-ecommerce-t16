@@ -159,70 +159,59 @@ app.post('/products/:id/send', function(req, res) {
 			console.log("email exists");
 			//'/products/:id'
 			client.query('SELECT customer_id FROM customers WHERE email = '+email+'', (err,data)=> {
-						if (err) {
-							console.log(err.stack)
-						}
-						else {
-							console.log(data.rows);
-							console.log("got customer id");
-							orders_values[2] = data.rows[0].customer_id;
-							console.log(orders_values+"<====")
-							client.query('INSERT INTO orders(product_id, quantity, customer_id) VALUES($1, $2, $3)', orders_values, (req,data)=> {
-								//nodemailer
-								let transporter = nodemailer.createTransport({
-							      	host: 'smtp.mail.yahoo.com',
-							        port: 465,
-							        secure: true,
-							        auth: {
-							            user: 'iemaniamailer@yahoo.com', 
-							            pass: 'custominearmonitor' 
-							        }
-							        /*
-							   		service: "gmail",
-								    host: "smtp.gmail.com",
-								    auth: {
-								    	XOAuth2: {
-									    user: "iemaniamailer@gmail.com", // Your gmail address.
-									                                            // Not @developer.gserviceaccount.com
-									    clientId: "469090	838515-jiih1k2plbij320lboaftcikbj9t7l10.apps.googleusercontent.com",
-									    clientSecret: "OWqHDggE02angzrCBErAsWZT",
-									    refreshToken: "1/9HSWcpu4cxDCWtKUNePFyr_y4JE3uR4R1x1W0Pl7pG0"
-								    	}
-								 	 }	
-							   		*/
-							    });
+				if (err) {
+					console.log(err.stack)
+				}
+				else {
+					console.log(data.rows);
+					console.log("got customer id");
+					orders_values[2] = data.rows[0].customer_id;
+					console.log(orders_values+"<====")
+					client.query('INSERT INTO orders(product_id, quantity, customer_id) VALUES($1, $2, $3)', orders_values, (req,data)=> {
+						//nodemailer
+						let transporter = nodemailer.createTransport({
+					   	    host: 'smtp.mail.yahoo.com',
+						    port: 465,
+						    secure: true,
+						    auth: {
+								user: 'iemaniamailer@yahoo.com', 
+								pass: 'custominearmonitor' 
+							}
+						});
 
-								let mailOptions1 = {
-							        from: '"IEMania Mailer" <iemaniamailer@yahoo.com',
-							        to: email,
-							        subject: 'IEMania Order Request Acknowledgement',
-							        html: output1
-							    };
+						let mailOptions1 = {
+							from: '"IEMania Mailer" <iemaniamailer@yahoo.com',
+							to: email,
+							subject: 'IEMania Order Request Acknowledgement',
+							html: output1
+						};
 
-							    let mailOptions2 = {
-							        from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
-							        to: 'jdvista96@gmail.com, drobscortz@gmail.com',
-							        subject: 'IEMania Order Request',
-							        html: output2
-							    };
+						let mailOptions2 = {
+							from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
+						 	to: 'jdvista96@gmail.com, drobscortz@gmail.com',
+							subject: 'IEMania Order Request',
+							html: output2
+						};
 
-							    transporter.sendMail(mailOptions1, (error, info)=>{
-							        if (error) {
-							            return console.log(error);
-							        }
-							        console.log('Message sent: %s', info.messageId);
-							        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-							     });
+						transporter.sendMail(mailOptions1, (error, info)=>{
+							if (error) {
+								return console.log(error);
+							}
+							console.log('Message sent: %s', info.messageId);
+							console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+						});
 
-							    transporter.sendMail(mailOptions2, (error, info)=>{
-							        if (error) {
-							            return console.log(error);
-							        }
-							        console.log('Message sent: %s', info.messageId);
-							        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-							     });
-							});
-							res.redirect('/products/'+id+'/send');
+						transporter.sendMail(mailOptions2, (error, info)=>{
+							if (error) {
+								return console.log(error);
+							}
+							console.log('Message sent: %s', info.messageId);
+							console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+						});
+					});
+					res.redirect('/products/'+id+'/send');    //---change this
+				}
+			});
 		}
 		else {
 			console.log("not exist");
