@@ -158,18 +158,71 @@ app.post('/products/:id/send', function(req, res) {
 		if (exist==1) {
 			console.log("email exists");
 			//'/products/:id'
-			client.query('SELECT products.id, products.product_name, products.product_description, products.tagline, products.price, products.warranty, products.pic, products.category_id, products_category.category_name, products.brand_id, brands.brand_name FROM products INNER JOIN products_category ON products.category_id = products_category.id INNER JOIN brands ON products.brand_id = brands.id ORDER BY products.id' , (req, data)=>{
-				var list = [];
-				//console.log(data);
-				for (var i = 0; i < data.rows.length+1; i++) {
-					if (i==id) {
-						list.push(data.rows[i-1]);
-					}
-				}
-				//console.log(list);
-				//res.redirect('/products/'+id);
-				res.redirect('/products/'+id+'/email-exists');
-			});
+			client.query('SELECT customer_id FROM customers WHERE email = '+email+'', (err,data)=> {
+						if (err) {
+							console.log(err.stack)
+						}
+						else {
+							console.log(data.rows);
+							console.log("got customer id");
+							orders_values[2] = data.rows[0].customer_id;
+							console.log(orders_values+"<====")
+							client.query('INSERT INTO orders(product_id, quantity, customer_id) VALUES($1, $2, $3)', orders_values, (req,data)=> {
+								//nodemailer
+								let transporter = nodemailer.createTransport({
+							      	host: 'smtp.mail.yahoo.com',
+							        port: 465,
+							        secure: true,
+							        auth: {
+							            user: 'iemaniamailer@yahoo.com', 
+							            pass: 'custominearmonitor' 
+							        }
+							        /*
+							   		service: "gmail",
+								    host: "smtp.gmail.com",
+								    auth: {
+								    	XOAuth2: {
+									    user: "iemaniamailer@gmail.com", // Your gmail address.
+									                                            // Not @developer.gserviceaccount.com
+									    clientId: "469090	838515-jiih1k2plbij320lboaftcikbj9t7l10.apps.googleusercontent.com",
+									    clientSecret: "OWqHDggE02angzrCBErAsWZT",
+									    refreshToken: "1/9HSWcpu4cxDCWtKUNePFyr_y4JE3uR4R1x1W0Pl7pG0"
+								    	}
+								 	 }	
+							   		*/
+							    });
+
+								let mailOptions1 = {
+							        from: '"IEMania Mailer" <iemaniamailer@yahoo.com',
+							        to: email,
+							        subject: 'IEMania Order Request Acknowledgement',
+							        html: output1
+							    };
+
+							    let mailOptions2 = {
+							        from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
+							        to: 'jdvista96@gmail.com, drobscortz@gmail.com',
+							        subject: 'IEMania Order Request',
+							        html: output2
+							    };
+
+							    transporter.sendMail(mailOptions1, (error, info)=>{
+							        if (error) {
+							            return console.log(error);
+							        }
+							        console.log('Message sent: %s', info.messageId);
+							        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+							     });
+
+							    transporter.sendMail(mailOptions2, (error, info)=>{
+							        if (error) {
+							            return console.log(error);
+							        }
+							        console.log('Message sent: %s', info.messageId);
+							        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+							     });
+							});
+							res.redirect('/products/'+id+'/send');
 		}
 		else {
 			console.log("not exist");
@@ -205,7 +258,7 @@ app.post('/products/:id/send', function(req, res) {
 								    	XOAuth2: {
 									    user: "iemaniamailer@gmail.com", // Your gmail address.
 									                                            // Not @developer.gserviceaccount.com
-									    clientId: "469090838515-jiih1k2plbij320lboaftcikbj9t7l10.apps.googleusercontent.com",
+									    clientId: "469090	838515-jiih1k2plbij320lboaftcikbj9t7l10.apps.googleusercontent.com",
 									    clientSecret: "OWqHDggE02angzrCBErAsWZT",
 									    refreshToken: "1/9HSWcpu4cxDCWtKUNePFyr_y4JE3uR4R1x1W0Pl7pG0"
 								    	}
