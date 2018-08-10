@@ -469,7 +469,7 @@ app.get('/customers/:id', (req,res)=>{
 			data.rows[0];
 			res.render('customer_details',{
 				data: list,
-				data2: list[0];
+				data2: list[0]
 			});
 		}
 	});
