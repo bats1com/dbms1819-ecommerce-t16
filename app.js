@@ -456,7 +456,7 @@ app.get('/customers', (req,res)=>{
 app.get('/customers/:id', (req,res)=>{
 	var id = req.params.id;
 	console.log(id);
-	client.query('SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity, customers.id, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, products.product_name FROM orders INNER JOIN customers ON orders.customer_id = customers.id INNER JOIN products ON orders.product_id = products.id WHERE orders.customer_id = $1', [id], (err, data)=>{
+	client.query('SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, products.product_name FROM orders INNER JOIN customers ON orders.customer_id = customers.id INNER JOIN products ON orders.product_id = products.id WHERE orders.customer_id = $1', [id], (err, data)=>{
 		if (err) {
 			console.log(err);
 		}
@@ -467,23 +467,17 @@ app.get('/customers/:id', (req,res)=>{
 				list.push(data.rows[i-1]);
 			}
 			data.rows[0];
-			client.query('SELECT id FROM orders WHERE customer_id=$1 ORDER BY id', [id],(req,data2)=>{
-				var list2 = [];
-				for (var i = 1; i < data.rows.length+1; i++) {
-					list2.push(data2.rows[i-1]);
-				}
-				res.render('customer_details',{
-					data: list,
-					data2: list2,
-					first_name: list[0].first_name,
-					last_name: list[0].last_name,
-					customer_id: list[0].customer_id,
-					email: list[0].email,
-					street: list[0].street,
-					municipality: list[0].municipality,
-					province: list[0].province,
-					zipcode: list[0].zipcode
-				});
+			res.render('customer_details',{
+				data: list,
+				first_name: list[0].first_name,
+				last_name: list[0].last_name,
+				customer_id: list[0].customer_id,
+				email: list[0].email,
+				street: list[0].street,
+				municipality: list[0].municipality,
+				province: list[0].province,
+				zipcode: list[0].zipcode
+
 			});
 		}
 	});
