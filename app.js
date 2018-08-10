@@ -158,14 +158,14 @@ app.post('/products/:id/send', function(req, res) {
 		if (exist==1) {
 			console.log("email exists");
 			//'/products/:id'
-			client.query('SELECT customer_id FROM customers WHERE email = '+email+'', (err,data)=> {
+			client.query('SELECT id FROM customers WHERE email=$1', [email], (err,data)=> {
 				if (err) {
 					console.log(err.stack)
 				}
 				else {
 					console.log(data.rows);
 					console.log("got customer id");
-					orders_values[2] = data.rows[0].customer_id;
+					orders_values[2] = data.rows[0].id;
 					console.log(orders_values+"<====")
 					client.query('INSERT INTO orders(product_id, quantity, customer_id) VALUES($1, $2, $3)', orders_values, (req,data)=> {
 						//nodemailer
