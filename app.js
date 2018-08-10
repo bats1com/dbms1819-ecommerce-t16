@@ -128,6 +128,14 @@ app.post('/products/:id/send', function(req, res) {
 	var orders_values = [req.body.product_id, req.body.quantity];
 	const output1 = `
 		<p>Your Order Request has been received!</p>
+		<h3>Order Details</h3>
+		<ul>
+			<li>Customer Name: ${req.body.first_name} ${req.body.last_name}</li>
+			<li>Email: ${req.body.email}</li>
+			<li>Address: ${req.body.street} ${req.body.municipality} ${req.body.province} ${req.body.zipcode}</li>
+			<li>Product ID: ${req.body.product_id}</li>
+			<li>Quantity: ${req.body.quantity}</li>
+		</ul>
 	`;
 	const output2 = `
 		<p>You have a new Order Request!</p>
