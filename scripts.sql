@@ -48,3 +48,14 @@ CREATE TABLE "customer_favorite_products" (
 
 SELECT products.id, products.product_name, products.product_description, products.tagline, products.price, products.warranty, products.pic, products.category_id, products_category.category_name, products.brand_id, brands.brand_name FROM products INNER JOIN products_category ON products.category_id = products_category.id INNER JOIN brands ON products.brand_id = brands.id ORDER BY products.id;
 SELECT * FROM products LEFT OUTER JOIN products_category ON products.category_id = products_category.id ORDER BY products.id;
+
+
+SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity,
+customers.id, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, 
+products.product_name
+FROM orders 
+INNER JOIN customers 
+ON orders.customer_id = customers.id 
+INNER JOIN products ON orders.product_id = products.id 
+WHERE orders.customer_id = 2
+ORDER BY products.id;

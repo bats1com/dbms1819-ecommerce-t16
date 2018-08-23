@@ -5,7 +5,7 @@
 			{{#each data}}
 			<div class="col-lg-4 col-md-4 col-sm-12 mb-4 mx-auto">
 				<div class="card bg-secondary text-light center">
-					<a href="/products/{{this.id}}" class="text-light">
+					<a href="/admin/products/{{this.id}}" class="text-light">
 						<img class="card-img-top" src="{{this.pic}}">
 						<!-- style="object-fit: cover;" height="100em" -->
 							<h6 class="card-title text-center my-1">{{this.product_name}}</h6>
@@ -17,7 +17,7 @@
 		</div>
 		<div class="row text-center">
 			<div class="col-lg-4 col-md-4 col-sm-12 mb-0 mx-auto">
-				<form method="GET" action="/product/create">
+				<form method="GET" action="/admin/product/create">
 					<button type="submit" class="btn btn-primary btn-lg" title="Create product">
 						Create Product
 					</button>

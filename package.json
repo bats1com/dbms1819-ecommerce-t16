@@ -6,7 +6,7 @@
   "engines": {
     "node": "10.6.0",
     "npm": "6.1.0"
-    },
+  },
   "scripts": {
     "start": "node app.js",
     "lint": "eslint app.js --fix",
