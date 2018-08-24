@@ -88,7 +88,7 @@ app.get('/product/create', (req, res) => { // CREATE PRODUCT html
 });
 
 app.get('/products/:id', (req, res) => {
-  var id = req.params.id;
+  var id = parseInt(req.params.id);
   client.query('SELECT products.id, products.product_name, products.product_description, products.tagline, products.price, products.warranty, products.pic, products.category_id, products_category.category_name, products.brand_id, brands.brand_name FROM products INNER JOIN products_category ON products.category_id = products_category.id INNER JOIN brands ON products.brand_id = brands.id ORDER BY products.id', (req, data) => {
     var list = [];
     // console.log(data);
@@ -106,7 +106,7 @@ app.get('/products/:id', (req, res) => {
 // create equivalen qpp.get route--------------------------------------------------
 app.post('/products/:id/send', function (req, res) {
   console.log(req.body);
-  var id = req.params.id;
+  var id = parseInt(req.params.id);
   var email = req.body.email;
   var customersValues = [req.body.email, req.body.first_name, req.body.last_name, req.body.street, req.body.municipality, req.body.province, req.body.zipcode];
   var ordersValues = [req.body.product_id, req.body.quantity];
@@ -264,7 +264,7 @@ app.post('/products/:id/send', function (req, res) {
 });
 
 app.get('/products/:id/send', function (req, res) {
-  var id = req.params.id;
+  var id = parseInt(req.params.id);
   res.render('email', {
     message: 'Email Sent!',
     PID: id
@@ -354,7 +354,7 @@ app.get('/category/create', (req, res) => { // route to create category
 });
 
 app.get('/product/update/:id', (req, res) => {
-  var id = req.params.id;
+  var id = parseInt(req.params.id);
   client.query('SELECT products.id, products.product_name, products.product_description, products.tagline, products.price, products.warranty, products.pic, products.category_id, products_category.category_name, products.brand_id, brands.brand_name FROM products INNER JOIN products_category ON products.category_id = products_category.id INNER JOIN brands ON products.brand_id = brands.id ORDER BY products.id', (req, data) => {
     var list = [];
     for (var i = 1; i < data.rows.length + 1; i++) {
@@ -384,7 +384,7 @@ app.get('/product/update/:id', (req, res) => {
 
 app.post('/products/:id', function (req, res) {
   console.log(req.body);
-  var id = req.params.id;
+  var id = parseInt(req.params.id);
   var values = [];
   values = [req.body.id, req.body.product_name, req.body.product_description, req.body.tagline, req.body.price, req.body.warranty, req.body.pic, req.body.category_id, req.body.brand_id];
   client.query('UPDATE products SET product_name = $2, product_description = $3, tagline = $4, price = $5, warranty = $6, pic = $7, category_id = $8, brand_id = $9 WHERE id = $1', values);
@@ -404,7 +404,7 @@ app.get('/customers', (req, res) => { // MODULE 3 additions
 });
 
 app.get('/customers/:id', (req, res) => {
-  var id = req.params.id;
+  var id = parseInt(req.params.id);
   client.query('SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, products.product_name FROM orders INNER JOIN customers ON orders.customer_id = customers.id INNER JOIN products ON orders.product_id = products.id WHERE orders.customer_id = $1', [id], (err, data) => {
     if (err) {
       console.log(err);
