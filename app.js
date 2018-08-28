@@ -47,6 +47,10 @@ app.use(bodyParser.json());
 
 // require .js from other files
 var Product = require('./models/product');
+var Brand = require('./models/brand');
+var Category = require('./models/category');
+var Order = require('./models/order');
+var Customer = require('./models/customer');
 
 app.get('/', function (req, res) { // product list
   Product.list(client, {}, function (products) {
@@ -85,30 +89,31 @@ app.get('/admin/products/:id', (req, res) => {
 });
 
 app.get('/admin/product/create', (req, res) => { // CREATE PRODUCT html
-  Product.createView(client, function (product) {
-    res.render('product_create', {
-      data: product.category,
-      data2: product.brand,
-      layout: 'admin'
+  Category.list(client, {}, function (categories) {
+    Brand.list(client, {}, function (brands) {
+      res.render('product_create', {
+        data: categories,
+        data2: brands,
+        layout: 'admin'
+      });
     });
   });
 });
 
 app.post('/admin', function (req, res) { // product list with insert new product
-  var values = [];
-  var productName;
-  productName = req.body.product_name;
-  values = [req.body.product_name, req.body.product_description, req.body.tagline, req.body.price, req.body.warranty, req.body.pic, req.body.category_id, req.body.brand_id];
-  client.query('SELECT product_name FROM products', (req, data) => {
-    var list;
-    var exist = 0;
-    for (var i = 0; i < data.rows.length; i++) {
-      list = data.rows[i].product_name;
-      if (list === productName) {
-        exist = 1;
-      }
-    }
-    if (exist === 1) {
+  var productData = {
+    product_name: req.body.product_name,
+    product_description: req.body.product_description,
+    tagline: req.body.tagline,
+    price: req.body.price,
+    warranty: req.body.warranty,
+    pic: req.body.pic,
+    category_id: req.body.category_id,
+    brand_id: req.body.brand_id
+  };
+
+  Product.create(client, productData, function (error) {
+    if (error === 1) {
       res.render('duplicate', {
         layout: 'admin',
         name: 'Products',
@@ -116,15 +121,44 @@ app.post('/admin', function (req, res) { // product list with insert new product
         action: '/admin'
       });
     } else {
-      client.query('INSERT INTO products(product_name, product_description, tagline, price, warranty, pic, category_id, brand_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)', values, (err, data) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          console.log(data.rows[0]);
-        }
-      });
       res.redirect('/admin');
     }
+  });
+});
+
+app.get('/admin/product/update/:id', (req, res) => {
+  Product.getById(client, req.params.id, function (products) {
+    Category.list(client, {}, function (categories) {
+      Brand.list(client, {}, function (brands) {
+        res.render('product_update', {
+          products: products,
+          products_category: categories,
+          brands: brands,
+          layout: 'admin'
+        });
+      });
+    });
+  });
+});
+
+app.post('/admin/products/:id', function (req, res) {
+  console.log(req.body);
+  var id = parseInt(req.params.id);
+  var productData = {
+    id: req.body.id,
+    product_name: req.body.product_name,
+    product_description: req.body.product_description,
+    tagline: req.body.tagline,
+    price: req.body.price,
+    warranty: req.body.warranty,
+    pic: req.body.pic,
+    category_id: req.body.category_id,
+    brand_id: req.body.brand_id
+  };
+
+  Product.update(client, productData, function (error) {
+    console.log(error);
+    res.redirect('/admin/products/' + id);
   });
 });
 
@@ -295,6 +329,137 @@ app.get('/products/:id/send', function (req, res) {
   });
 });
 
+app.get('/brands', (req, res) => { // brand list
+  Brand.list(client, {}, function (brands) {
+    res.render('brands_customer', {
+      data: brands
+    });
+  });
+});
+
+app.get('/admin/brands', (req, res) => { // brand list
+  Brand.list(client, {}, function (brands) {
+    res.render('brands', {
+      data: brands,
+      layout: 'admin'
+    });
+  });
+});
+
+app.get('/admin/brand/create', (req, res) => { // route to create brand html
+  res.render('brand_create', {
+    layout: 'admin'
+  });
+});
+
+app.post('/admin/brands', function (req, res) { // brand list insert
+  var brandData = {
+    brand_name: req.body.brand_name,
+    brand_description: req.body.brand_description
+  };
+  Brand.create(client, brandData, function (error) {
+    if (error === 1) {
+      res.render('duplicate', {// temporary html
+        layout: 'admin',
+        name: 'Brands',
+        message: 'Brand already exists',
+        action: '/admin/brands'
+      });
+    } else {
+      res.redirect('/admin/brands');
+    }
+  });
+});
+
+app.get('/categories', (req, res) => { // category list
+  Category.list(client, {}, function (categories) {
+    res.render('categories_customer', {
+      data: categories
+    });
+  });
+});
+
+app.get('/admin/categories', (req, res) => { // category list
+  Category.list(client, {}, function (categories) {
+    res.render('categories', {
+      data: categories,
+      layout: 'admin'
+    });
+  });
+});
+
+app.get('/admin/category/create', (req, res) => { // route to create category
+  res.render('category_create', {
+    layout: 'admin'
+  });
+});
+
+app.post('/admin/categories', function (req, res) { // category list with insert new category query
+  Category.create(client, req.body.category_name, function (error) {
+    if (error === 1) {
+      res.render('duplicate', {
+        layout: 'admin',
+        name: 'Categories',
+        message: 'Category already exists',
+        action: '/admin/categories'
+      });
+    } else {
+      res.redirect('/admin/categories');
+    }
+  });
+});
+
+app.get('/admin/customers', (req, res) => { // MODULE 3 additions
+  Customer.list(client, function (customers) {
+    res.render('customers', {
+      data: customers,
+      layout: 'admin'
+    });
+  });
+});
+
+app.get('/admin/customers/:id', (req, res) => {
+  /*
+  var id = parseInt(req.params.id);
+  client.query('SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, products.product_name FROM orders INNER JOIN customers ON orders.customer_id = customers.id INNER JOIN products ON orders.product_id = products.id WHERE orders.customer_id = $1', [id], (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      var list = [];
+      console.log(data.rows);
+      for (var i = 1; i < data.rows.length + 1; i++) {
+        list.push(data.rows[i - 1]);
+      }
+      // res.render
+    }
+  });
+  */
+  Order.listByCustomerId(client, req.params.id, function (orderData) {
+    res.render('customer_details', {
+      data: orderData,
+      layout: 'admin',
+      first_name: orderData[0].first_name,
+      last_name: orderData[0].last_name,
+      customer_id: orderData[0].customer_id,
+      email: orderData[0].email,
+      street: orderData[0].street,
+      municipality: orderData[0].municipality,
+      province: orderData[0].province,
+      zipcode: orderData[0].zipcode
+    });
+  });
+});
+
+app.get('/admin/orders', (req, res) => {
+  Order.list(client, {}, function (orders) {
+    res.render('orders', {
+      data: orders,
+      layout: 'admin'
+    });
+  });
+});
+
+// MEMBERS
 app.get('/member/1', function (req, res) {
   res.render('member', {
     name: 'Jomar Vista',
@@ -312,199 +477,6 @@ app.get('/member/2', function (req, res) {
     phone: '09971960972',
     imageurl: '/daniel.jpg',
     hobbies: ['Playing computer games', 'Watching youtube videos']
-  });
-});
-
-app.get('/brands', (req, res) => { // brand list
-  client.query('SELECT * FROM brands', (req, data) => {
-    res.render('brands_customer', {
-      data: data.rows
-    });
-  });
-});
-
-app.get('/categories', (req, res) => { // category list
-  client.query('SELECT * FROM products_category', (req, data) => {
-    res.render('categories_customer', {
-      data: data.rows
-    });
-  });
-});
-
-// -----------------------------ALL ADMIN ROUTES----------------------------------------------------------------------------------------
-
-app.get('/admin/product/update/:id', (req, res) => {
-  var id = parseInt(req.params.id);
-  client.query(`SELECT products.id, products.product_name, products.product_description, products.tagline, products.price, products.warranty, products.pic, products.category_id, products_category.category_name, products.brand_id, brands.brand_name FROM products INNER JOIN products_category ON products.category_id = products_category.id INNER JOIN brands ON products.brand_id = brands.id WHERE products.id = ${id}`, (req, data) => {
-    client.query('SELECT * FROM products_category', (req, data2) => {
-      client.query('SELECT * FROM brands', (req, data3) => {
-        res.render('product_update', {
-          products: data.rows,
-          products_category: data2.rows,
-          brands: data3.rows,
-          layout: 'admin'
-        });
-      });
-    });
-  });
-});
-
-app.post('/admin/products/:id', function (req, res) {
-  console.log(req.body);
-  var id = parseInt(req.params.id);
-  var values = [];
-  values = [req.body.id, req.body.product_name, req.body.product_description, req.body.tagline, req.body.price, req.body.warranty, req.body.pic, req.body.category_id, req.body.brand_id];
-  client.query('UPDATE products SET product_name = $2, product_description = $3, tagline = $4, price = $5, warranty = $6, pic = $7, category_id = $8, brand_id = $9 WHERE id = $1', values);
-  res.redirect('/admin/products/' + id);
-});
-
-// products ^
-app.post('/admin/brands', function (req, res) { // brand list insert
-  var values = [];
-  var brandName;
-  brandName = req.body.brand_name;
-  values = [req.body.brand_name, req.body.brand_description];
-  console.log(req.body);
-  console.log(values);
-  client.query('SELECT brand_name FROM brands', (req, data) => {
-    var list;
-    var exist = 0;
-    for (var i = 0; i < data.rows.length; i++) {
-      list = data.rows[i].brand_name;
-      console.log(list);
-      if (list === brandName) {
-        exist = 1;
-      }
-    }
-    if (exist === 1) {
-      res.render('duplicate', {// temporary html
-        layout: 'admin',
-        name: 'Brands',
-        message: 'Brand already exists',
-        action: '/admin/brands'
-      });
-    } else {
-      client.query('INSERT INTO brands(brand_name, brand_description) VALUES($1, $2)', values, (err, data) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          console.log(data.rows[0]);
-        }
-      });
-      res.redirect('/admin/brands');
-    }
-  });
-});
-
-app.get('/admin/brands', (req, res) => { // brand list
-  client.query('SELECT * FROM brands', (req, data) => {
-    res.render('brands', {
-      data: data.rows,
-      layout: 'admin'
-    });
-  });
-});
-
-app.get('/admin/brand/create', (req, res) => { // route to create brand html
-  res.render('brand_create', {
-    layout: 'admin'
-  });
-});
-
-app.post('/admin/categories', function (req, res) { // category list with insert new category query
-  var values = [];
-  values = req.body.category_name;
-  console.log(req.body);
-  console.log(values);
-  client.query('SELECT category_name FROM products_category', (req, data) => {
-    var list;
-    var exist = 0;
-    console.log(values);
-    console.log('aw');
-    for (var i = 0; i < data.rows.length; i++) {
-      list = data.rows[i].category_name;
-      console.log(list);
-      if (list === values) {
-        exist = 1;
-      }
-    }
-    if (exist === 1) {
-      res.render('duplicate', {// temporary html
-        layout: 'admin',
-        name: 'Categories',
-        message: 'Category already exists',
-        action: '/admin/categories'
-      });
-    } else {
-      client.query(`INSERT INTO products_category(category_name) VALUES('${values}')`, (err, data) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          console.log(data.rows[0]);
-        }
-      });
-      res.redirect('/admin/categories');
-    }
-  });
-});
-
-app.get('/admin/categories', (req, res) => { // category list
-  client.query('SELECT * FROM products_category', (req, data) => {
-    res.render('categories', {
-      data: data.rows,
-      layout: 'admin'
-    });
-  });
-});
-
-app.get('/admin/category/create', (req, res) => { // route to create category
-  res.render('category_create', {
-    layout: 'admin'
-  });
-});
-
-app.get('/admin/customers', (req, res) => { // MODULE 3 additions
-  client.query('SELECT * FROM customers', (req, data) => {
-    res.render('customers', {
-      data: data.rows,
-      layout: 'admin'
-    });
-  });
-});
-
-app.get('/admin/customers/:id', (req, res) => {
-  var id = parseInt(req.params.id);
-  client.query('SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, products.product_name FROM orders INNER JOIN customers ON orders.customer_id = customers.id INNER JOIN products ON orders.product_id = products.id WHERE orders.customer_id = $1', [id], (err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      var list = [];
-      console.log(data.rows);
-      for (var i = 1; i < data.rows.length + 1; i++) {
-        list.push(data.rows[i - 1]);
-      }
-      res.render('customer_details', {
-        data: data.rows,
-        layout: 'admin',
-        first_name: list[0].first_name,
-        last_name: list[0].last_name,
-        customer_id: list[0].customer_id,
-        email: list[0].email,
-        street: list[0].street,
-        municipality: list[0].municipality,
-        province: list[0].province,
-        zipcode: list[0].zipcode
-      });
-    }
-  });
-});
-
-app.get('/admin/orders', (req, res) => {
-  client.query('SELECT * FROM orders', (req, data) => {
-    res.render('orders', {
-      data: data.rows,
-      layout: 'admin'
-    });
   });
 });
 

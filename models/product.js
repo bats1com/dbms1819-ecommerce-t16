@@ -38,16 +38,51 @@ var Product = {
     });
   },
 
-  createView: function (client, callback) {
-    client.query('SELECT * FROM products_category', (req, data) => {
-      client.query('SELECT * FROM brands', (req, data2) => {
-        var product = {
-          category: data.rows,
-          brand: data2.rows
-        };
-        callback(product);
+  create: function (client, productData, callback) {
+    var error = 0;
+    const insertQuery = `
+    INSERT INTO products(product_name, product_description, tagline, price, warranty, pic, category_id, brand_id) 
+    VALUES('${productData.product_name}', '${productData.product_description}', '${productData.tagline}', '${productData.price}', '${productData.warranty}', '${productData.pic}', '${productData.category_id}', '${productData.brand_id}')
+    `;
+    client.query(insertQuery)
+      .then((result) => {
+        console.log('Inserted');
+        callback(error);
+      })
+      .catch((err) => {
+        console.log('error', err);
+        error = 1;
+        callback(error);
       });
-    });
+  },
+
+  update: function (client, productData, callback) {
+    var error = 0;
+    const updateQuery = `
+    UPDATE 
+      products 
+    SET 
+      product_name = '${productData.product_name}', 
+      product_description = '${productData.product_description}', 
+      tagline = '${productData.tagline}', 
+      price = '${productData.price}', 
+      warranty = '${productData.warranty}', 
+      pic = '${productData.pic}', 
+      category_id = '${productData.category_id}', 
+      brand_id = '${productData.brand_id}' 
+    WHERE 
+      id = ${productData.id}
+    `;
+    client.query(updateQuery)
+      .then((result) => {
+        console.log('Updated');
+        callback(error);
+      })
+      .catch((err) => {
+        console.log('error', err);
+        error = 1;
+        callback(error);
+      });
   }
 
 };

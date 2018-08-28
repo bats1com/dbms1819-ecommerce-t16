@@ -36,7 +36,7 @@ CREATE TABLE "orders" (
   "id" SERIAL PRIMARY KEY,
   "customer_id" INT REFERENCES customers(id),
   "product_id" INT REFERENCES products(id),
-  "order_date" timestamp DEFAULT current_timestamp,
+  "order_date" VARCHAR(80),
   "quantity" INT
 );
 

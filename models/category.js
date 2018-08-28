@@ -1,21 +1,21 @@
-var Brand = {
+var Category = {
 
   list: function (client, filter, callback) {
-    const brandQuery = `
+    const categoryQuery = `
       SELECT * 
-      FROM brands
+      FROM products_category
     `;
-    client.query(brandQuery, (req, data) => {
+    client.query(categoryQuery, (req, data) => {
       console.log(data.rows);
       callback(data.rows);
     });
   },
 
-  create: function (client, brandData, callback) {
+  create: function (client, categoryData, callback) {
     var error = 0;
     const insertQuery = `
-    INSERT INTO brands(brand_name, brand_description) 
-    VALUES('${brandData.brand_name}', '${brandData.brand_description}')
+    INSERT INTO products_category(category_name) 
+    VALUES('${categoryData}')
     `;
     client.query(insertQuery)
       .then((result) => {
@@ -31,4 +31,4 @@ var Brand = {
 
 };
 
-module.exports = Brand;
+module.exports = Category;
