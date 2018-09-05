@@ -4,11 +4,11 @@ const { Client } = require('pg');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-// const hbs = require('nodemailer-express-handlebars');
 const moment = require('moment-timezone');
 const PORT = process.env.PORT || 5000; // test
-// const url = require('url'); not used
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+// const hbs = require('nodemailer-express-handlebars');
+// const url = require('url'); not used
 
 const client = new Client({
   database: 'ddmihcu0i9oh4g',
@@ -51,6 +51,7 @@ var Brand = require('./models/brand');
 var Category = require('./models/category');
 var Order = require('./models/order');
 var Customer = require('./models/customer');
+// var Dashboard = require.('.models/dashboard');
 
 app.get('/', function (req, res) { // product list
   Product.list(client, {}, function (products) {
@@ -62,6 +63,16 @@ app.get('/', function (req, res) { // product list
 });
 
 app.get('/admin', function (req, res) { // product list
+  // Dashboard.1?(client, {}, function (products) {
+  res.render('dashboard', {
+    // data: products,
+    // title: 'Top Products'
+    layout: 'admin'
+  });
+  // });
+});
+
+app.get('/admin/products', function (req, res) { // product list
   Product.list(client, {}, function (products) {
     res.render('home', {
       data: products,
@@ -79,15 +90,6 @@ app.get('/products/:id', (req, res) => {
   });
 });
 
-app.get('/admin/products/:id', (req, res) => {
-  Product.getById(client, req.params.id, function (productData) {
-    res.render('products', {
-      data: productData,
-      layout: 'admin'
-    });
-  });
-});
-
 app.get('/admin/product/create', (req, res) => { // CREATE PRODUCT html
   Category.list(client, {}, function (categories) {
     Brand.list(client, {}, function (brands) {
@@ -100,7 +102,16 @@ app.get('/admin/product/create', (req, res) => { // CREATE PRODUCT html
   });
 });
 
-app.post('/admin', function (req, res) { // product list with insert new product
+app.get('/admin/products/:id', (req, res) => {
+  Product.getById(client, req.params.id, function (productData) {
+    res.render('products', {
+      data: productData,
+      layout: 'admin'
+    });
+  });
+});
+
+app.post('/admin/products', function (req, res) { // product list with insert new product
   var productData = {
     product_name: req.body.product_name,
     product_description: req.body.product_description,
@@ -126,7 +137,7 @@ app.post('/admin', function (req, res) { // product list with insert new product
   });
 });
 
-app.get('/admin/product/update/:id', (req, res) => {
+app.get('/admin/products/update/:id', (req, res) => {
   Product.getById(client, req.params.id, function (products) {
     Category.list(client, {}, function (categories) {
       Brand.list(client, {}, function (brands) {
@@ -168,8 +179,8 @@ app.post('/products/:id/send', function (req, res) {
   var id = parseInt(req.params.id);
   var email = req.body.email;
   var orderDate = moment().tz('Asia/Manila').format('LLL'); // momentjs
-  var customersValues = [req.body.email, req.body.first_name, req.body.last_name, req.body.street, req.body.municipality, req.body.province, req.body.zipcode];
-  var ordersValues = [req.body.product_id, req.body.quantity, orderDate];
+  // var customersValues = [req.body.email, req.body.first_name, req.body.last_name, req.body.street, req.body.municipality, req.body.province, req.body.zipcode];
+  // var ordersValues = [req.body.product_id, req.body.quantity, orderDate];
   const output1 = `
     <p>Your Order Request has been received!</p>
     <h3>Order Details</h3>
@@ -193,132 +204,64 @@ app.post('/products/:id/send', function (req, res) {
     </ul>
   `;
 
-  client.query('SELECT email FROM customers', (req, data) => {
-    var list;
-    var exist = 0;
-    console.log(email);
-    for (var i = 0; i < data.rows.length; i++) {
-      list = data.rows[i].email;
-      if (list === email) {
-        exist = 1;
-      }
-    }
-
-    if (exist === 1) {
-      console.log('email exists');
-      // '/products/:id'
-      client.query('SELECT id FROM customers WHERE email=$1', [email], (err, data) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          ordersValues[3] = data.rows[0].id;
-          // console.log(ordersValues + '<====');
-          client.query('INSERT INTO orders(product_id, quantity, order_date, customer_id) VALUES($1, $2, $3, $4)', ordersValues, (req, data) => {
-            // nodemailer
-            let transporter = nodemailer.createTransport({
-              host: 'smtp.mail.yahoo.com',
-              port: 465,
-              secure: true,
-              auth: {
-                user: 'iemaniamailer@yahoo.com',
-                pass: 'custominearmonitor'
-              }
-            });
-
-            let mailOptions1 = {
-              from: '"IEMania Mailer" <iemaniamailer@yahoo.com',
-              to: email,
-              subject: 'IEMania Order Request Acknowledgement',
-              html: output1
-            };
-
-            let mailOptions2 = {
-              from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
-              to: 'jdvista96@gmail.com, drobscortz@gmail.com',
-              subject: 'IEMania Order Request',
-              html: output2
-            };
-
-            transporter.sendMail(mailOptions1, (error, info) => {
-              if (error) {
-                return console.log(error);
-              }
-              console.log('Message sent: %s', info.messageId);
-              console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-            });
-
-            transporter.sendMail(mailOptions2, (error, info) => {
-              if (error) {
-                return console.log(error);
-              }
-              console.log('Message sent: %s', info.messageId);
-              console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-            });
-          });
-          res.redirect('/products/' + id + '/send'); // ---change this
-        }
-      });
-    } else {
-      console.log('not exist');
-      console.log(customersValues);
-      client.query('INSERT INTO customers(email, first_name, last_name, street, municipality, province, zipcode) VALUES($1, $2, $3, $4, $5, $6, $7)', customersValues, (err, data) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          client.query('SELECT lastval()', (err, data) => {
-            if (err) {
-              console.log(err.stack);
-            } else {
-              ordersValues[3] = data.rows[0].lastval;
-              client.query('INSERT INTO orders(product_id, quantity, order_date, customer_id) VALUES($1, $2, $3, $4)', ordersValues, (req, data) => {
-                // nodemailer
-                let transporter = nodemailer.createTransport({
-                  host: 'smtp.mail.yahoo.com',
-                  port: 465,
-                  secure: true,
-                  auth: {
-                    user: 'iemaniamailer@yahoo.com',
-                    pass: 'custominearmonitor'
-                  }
-                });
-
-                let mailOptions1 = {
-                  from: '"IEMania Mailer" <iemaniamailer@yahoo.com',
-                  to: email,
-                  subject: 'IEMania Order Request Acknowledgement',
-                  html: output1
-                };
-
-                let mailOptions2 = {
-                  from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
-                  to: 'jdvista96@gmail.com, drobscortz@gmail.com',
-                  subject: 'IEMania Order Request',
-                  html: output2
-                };
-
-                transporter.sendMail(mailOptions1, (error, info) => {
-                  if (error) {
-                    return console.log(error);
-                  }
-                  console.log('Message sent: %s', info.messageId);
-                  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-                });
-
-                transporter.sendMail(mailOptions2, (error, info) => {
-                  if (error) {
-                    return console.log(error);
-                  }
-                  console.log('Message sent: %s', info.messageId);
-                  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-                });
-              });
-              res.redirect('/products/' + id + '/send'); // ---change this
+  // query with unique constraint
+  client.query(`INSERT INTO customers (email, first_name, last_name, street, municipality, province, zipcode) VALUES ('${req.body.email}', '${req.body.first_name}', '${req.body.last_name}', '${req.body.street}','${req.body.municipality}', '${req.body.province}', '${req.body.zipcode}') ON CONFLICT (email) DO UPDATE SET first_name = '${req.body.first_name}', last_name = '${req.body.last_name}', street = '${req.body.street}', municipality = '${req.body.municipality}', province = '${req.body.province}', zipcode = '${req.body.zipcode}' WHERE customers.email ='${req.body.email}';`);
+  client.query(`SELECT id FROM customers WHERE email = '${req.body.email}';`)
+    .then((results) => {
+      console.log(results);
+      var customerId = results.rows[0].id;
+      client.query(`INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES ('${customerId}', '${req.params.id}', '${req.body.quantity}', '${orderDate}');`)
+        .then((results) => {
+          let transporter = nodemailer.createTransport({
+            host: 'smtp.mail.yahoo.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'iemaniamailer@yahoo.com',
+              pass: 'custominearmonitor'
             }
           });
-        }
-      });
-    }
-  });
+
+          let mailOptions1 = {
+            from: '"IEMania Mailer" <iemaniamailer@yahoo.com',
+            to: email,
+            subject: 'IEMania Order Request Acknowledgement',
+            html: output1
+          };
+
+          let mailOptions2 = {
+            from: '"IEMania Mailer" <iemaniamailer@yahoo.com>',
+            to: 'jdvista96@gmail.com, drobscortz@gmail.com',
+            subject: 'IEMania Order Request',
+            html: output2
+          };
+
+          transporter.sendMail(mailOptions1, (error, info) => {
+            if (error) {
+              return console.log(error);
+            }
+            console.log('Message sent: %s', info.messageId);
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+          });
+
+          transporter.sendMail(mailOptions2, (error, info) => {
+            if (error) {
+              return console.log(error);
+            }
+            console.log('Message sent: %s', info.messageId);
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+          });
+          res.redirect('/products/' + id + '/send');
+        })
+        .catch((err) => {
+          console.log('error', err);
+          res.send('Error sa e-mail');
+        });
+    })
+    .catch((err) => {
+      console.log('error', err);
+      res.send('Error sa products send!');
+    });
 });
 
 app.get('/products/:id/send', function (req, res) {
@@ -419,21 +362,6 @@ app.get('/admin/customers', (req, res) => { // MODULE 3 additions
 });
 
 app.get('/admin/customers/:id', (req, res) => {
-  /*
-  var id = parseInt(req.params.id);
-  client.query('SELECT orders.id, orders.customer_id, orders.product_id, orders.order_date, orders.quantity, customers.email, customers.first_name, customers.last_name, customers.street, customers.municipality, customers.province, customers.zipcode, products.product_name FROM orders INNER JOIN customers ON orders.customer_id = customers.id INNER JOIN products ON orders.product_id = products.id WHERE orders.customer_id = $1', [id], (err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      var list = [];
-      console.log(data.rows);
-      for (var i = 1; i < data.rows.length + 1; i++) {
-        list.push(data.rows[i - 1]);
-      }
-      // res.render
-    }
-  });
-  */
   Order.listByCustomerId(client, req.params.id, function (orderData) {
     res.render('customer_details', {
       data: orderData,
