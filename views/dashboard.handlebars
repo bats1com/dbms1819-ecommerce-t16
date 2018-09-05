@@ -1,6 +1,7 @@
 <div class="container">
   <div class="jumbotron mt-2">
-    <h3 align="center">Top 10 Customers with most number of orders</h3>
+
+    <h3 align="center">Top 10 Customers With The Most Number Of Orders</h3>
       <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
         <div class="card bg-secondary text-light center">
           <table style="width:80%" class="table table-sm mx-auto">
@@ -27,8 +28,8 @@
           </table>
         </div>
       </div>
-    <h3 align="center">Top 10 with highest payment</h3>
-    {{#each data}}
+
+    {{!-- <h3 align="center">Top 10 Customers With Highest Payment</h3>
       <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
         <div class="card bg-secondary text-light center">
           <table style="width:80%" class="table table-sm mx-auto">
@@ -36,11 +37,11 @@
               <th>Name</th>
               <th>Number of Orders</th>
             </tr>
-            {{#each topTenCustomersWithMostOrders}}
+            {{#each }}
             <tr>
               <td>
-                {{!-- <a href="/admin/customers/{{this.id}}">
-                </a> --}}
+                <a href="/admin/customers/{{this.id}}">
+                </a>
                   {{this.first_name}} {{this.last_name}}
               </td>
               <td>
@@ -50,8 +51,95 @@
            {{/each}}
           </table>
         </div>
+      </div> --}}
+
+    <h3 align="center">Top 10 Most Ordered Products</h3>
+      <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
+        <div class="card bg-secondary text-light center">
+          <table style="width:80%" class="table table-sm mx-auto">
+            <tr>
+              <th>Product Name</th>
+              <th>Number of Orders</th>
+            </tr>
+            {{#each topTenMostOrderedProducts}}
+            <tr>
+              <td>
+                  {{this.product_name}}
+              </td>
+              <td>
+                {{this.number_of_orders}}
+              </td>
+            </tr>
+           {{/each}}
+          </table>
+        </div>
       </div>
-    {{/each}}
+
+      <h3 align="center">Top 10 Least Ordered Products</h3>
+      <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
+        <div class="card bg-secondary text-light center">
+          <table style="width:80%" class="table table-sm mx-auto">
+            <tr>
+              <th>Product Name</th>
+              <th>Number of Orders</th>
+            </tr>
+            {{#each topTenLeastOrderedProducts}}
+            <tr>
+              <td>
+                  {{this.product_name}}
+              </td>
+              <td>
+                {{this.number_of_orders}}
+              </td>
+            </tr>
+           {{/each}}
+          </table>
+        </div>
+      </div>
+
+      <h3 align="center">Top 3 Most Ordered Brands</h3>
+      <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
+        <div class="card bg-secondary text-light center">
+          <table style="width:80%" class="table table-sm mx-auto">
+            <tr>
+              <th>Brand Name</th>
+              <th>Number of Orders</th>
+            </tr>
+            {{#each topThreeMostOrderedBrands}}
+            <tr>
+              <td>
+                  {{this.brand_name}}
+              </td>
+              <td>
+                {{this.number_of_orders}}
+              </td>
+            </tr>
+           {{/each}}
+          </table>
+        </div>
+      </div>
+
+      <h3 align="center">Top 3 Most Ordered Categories</h3>
+      <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
+        <div class="card bg-secondary text-light center">
+          <table style="width:80%" class="table table-sm mx-auto">
+            <tr>
+              <th>Brand Name</th>
+              <th>Number of Orders</th>
+            </tr>
+            {{#each topThreeMostOrderedCategories}}
+            <tr>
+              <td>
+                  {{this.category_name}}
+              </td>
+              <td>
+                {{this.number_of_orders}}
+              </td>
+            </tr>
+           {{/each}}
+          </table>
+        </div>
+      </div>
 
   </div>
 </div>
