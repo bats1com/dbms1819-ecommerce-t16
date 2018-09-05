@@ -15,6 +15,7 @@ var Dashboard = {
         customers.last_name,
         customers.email
       ORDER BY COUNT(orders.id) DESC
+      LIMIT 10
     `;
     client.query(query, (req, data) => {
       console.log(data.rows);
@@ -49,17 +50,6 @@ var Dashboard = {
   dailyOrderCountForSevenDays: function (client, callback) {
 
   }
-
-  // list: function (client, filter, callback) {
-  //   const brandQuery = `
-  //     SELECT *
-  //     FROM brands
-  //   `;
-  //   client.query(brandQuery, (req, data) => {
-  //     console.log(data.rows);
-  //     callback(data.rows);
-  //   });
-  // }
 
 };
 
