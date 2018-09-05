@@ -51,7 +51,7 @@ var Brand = require('./models/brand');
 var Category = require('./models/category');
 var Order = require('./models/order');
 var Customer = require('./models/customer');
-// var Dashboard = require.('.models/dashboard');
+var Dashboard = require('./models/dashboard');
 
 app.get('/', function (req, res) { // product list
   Product.list(client, {}, function (products) {
@@ -63,13 +63,13 @@ app.get('/', function (req, res) { // product list
 });
 
 app.get('/admin', function (req, res) { // product list
-  // Dashboard.1?(client, {}, function (products) {
-  res.render('dashboard', {
-    // data: products,
-    // title: 'Top Products'
-    layout: 'admin'
+  Dashboard.topTenCustomersWithMostOrders(client, function (customerData) {
+    res.render('dashboard', {
+      topTenCustomersWithMostOrders: customerData,
+      title: 'Top Products',
+      layout: 'admin'
+    });
   });
-  // });
 });
 
 app.get('/admin/products', function (req, res) { // product list
