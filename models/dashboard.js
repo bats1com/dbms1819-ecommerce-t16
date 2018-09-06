@@ -24,7 +24,30 @@ var Dashboard = {
   },
 
   topTenCustomersWithHighestPayment: function (client, callback) {
-
+    const query = `
+    SELECT
+      customers.first_name,
+      customers.last_name,
+      customers.email AS email,
+      SUM(products.price * orders.quantity) AS total_payment
+    FROM orders
+    INNER JOIN products
+    ON products.id = orders.product_id
+    INNER JOIN customers
+    ON customers.id = orders.customer_id
+    GROUP BY
+      customers.first_name,
+      customers.last_name,
+      customers.email
+    ORDER BY 
+      total_payment DESC,
+      customers.first_name ASC
+    LIMIT 10
+    `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
   },
 
   topTenMostOrderedProducts: function (client, callback) {
@@ -117,8 +140,40 @@ var Dashboard = {
     });
   },
 
-  totalSalesInTheLast: function (client, days, callback) {
+  totalSalesInTheLastSevenDays: function (client, callback) {
+    const query = `
+      SELECT SUM(orders.quantity*products.price) AS total_sales_for_seven_days
+      FROM orders
+      INNER JOIN products
+      ON products.id = orders.product_id
+      INNER JOIN customers
+      ON customers.id = orders.customer_id
+      WHERE order_date 
+      BETWEEN CURRENT_DATE - INTERVAL '7 days'
+      AND CURRENT_DATE + INTERVAL '1 days'
+    `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
+  },
 
+  totalSalesInTheLastThirtyDays: function (client, callback) {
+    const query = `
+      SELECT SUM(orders.quantity*products.price) AS total_sales_for_thirty_days
+      FROM orders
+      INNER JOIN products
+      ON products.id = orders.product_id
+      INNER JOIN customers
+      ON customers.id = orders.customer_id
+      WHERE order_date 
+      BETWEEN CURRENT_DATE - INTERVAL '30 days'
+      AND CURRENT_DATE + INTERVAL '1 days'
+    `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
   },
 
   dailyOrderCountForSevenDays: function (client, callback) {

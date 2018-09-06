@@ -4,7 +4,7 @@ const { Client } = require('pg');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const moment = require('moment-timezone');
+// const moment = require('moment-timezone');
 const PORT = process.env.PORT || 5000; // test
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 // const hbs = require('nodemailer-express-handlebars');
@@ -64,19 +64,27 @@ app.get('/', function (req, res) { // product list
 
 app.get('/admin', function (req, res) { // product list
   Dashboard.topTenCustomersWithMostOrders(client, function (topTenCustomersWithMostOrders) {
-    Dashboard.topTenMostOrderedProducts(client, function (topTenMostOrderedProducts) {
-      Dashboard.topTenLeastOrderedProducts(client, function (topTenLeastOrderedProducts) {
-        Dashboard.topThreeMostOrderedBrands(client, function (topThreeMostOrderedBrands) {
-          Dashboard.topThreeMostOrderedCategories(client, function (topThreeMostOrderedCategories) {
-            res.render('dashboard', {
-              topTenCustomersWithMostOrders: topTenCustomersWithMostOrders,
-              // topTenCustomersWithHighestPayment: topTenCustomersWithHighestPayment,
-              topTenMostOrderedProducts: topTenMostOrderedProducts,
-              topTenLeastOrderedProducts: topTenLeastOrderedProducts,
-              topThreeMostOrderedBrands: topThreeMostOrderedBrands,
-              topThreeMostOrderedCategories: topThreeMostOrderedCategories,
-              title: 'Top Products',
-              layout: 'admin'
+    Dashboard.topTenCustomersWithHighestPayment(client, function (topTenCustomersWithHighestPayment) {
+      Dashboard.topTenMostOrderedProducts(client, function (topTenMostOrderedProducts) {
+        Dashboard.topTenLeastOrderedProducts(client, function (topTenLeastOrderedProducts) {
+          Dashboard.topThreeMostOrderedBrands(client, function (topThreeMostOrderedBrands) {
+            Dashboard.topThreeMostOrderedCategories(client, function (topThreeMostOrderedCategories) {
+              Dashboard.totalSalesInTheLastSevenDays(client, function (totalSalesInTheLastSevenDays) {
+                Dashboard.totalSalesInTheLastThirtyDays(client, function (totalSalesInTheLastThirtyDays) {
+                  res.render('dashboard', {
+                    topTenCustomersWithMostOrders: topTenCustomersWithMostOrders,
+                    topTenCustomersWithHighestPayment: topTenCustomersWithHighestPayment,
+                    topTenMostOrderedProducts: topTenMostOrderedProducts,
+                    topTenLeastOrderedProducts: topTenLeastOrderedProducts,
+                    topThreeMostOrderedBrands: topThreeMostOrderedBrands,
+                    topThreeMostOrderedCategories: topThreeMostOrderedCategories,
+                    totalSalesInTheLastSevenDays: totalSalesInTheLastSevenDays,
+                    totalSalesInTheLastThirtyDays: totalSalesInTheLastThirtyDays,
+                    title: 'Top Products',
+                    layout: 'admin'
+                  });
+                });
+              });
             });
           });
         });
@@ -191,7 +199,7 @@ app.post('/products/:id/send', function (req, res) {
   console.log(req.body);
   var id = parseInt(req.params.id);
   var email = req.body.email;
-  var orderDate = moment().tz('Asia/Manila').format('LLL'); // momentjs
+  // var orderDate = moment().tz('Asia/Manila').format('LLL'); // momentjs
   // var customersValues = [req.body.email, req.body.first_name, req.body.last_name, req.body.street, req.body.municipality, req.body.province, req.body.zipcode];
   // var ordersValues = [req.body.product_id, req.body.quantity, orderDate];
   const output1 = `
@@ -223,7 +231,7 @@ app.post('/products/:id/send', function (req, res) {
     .then((results) => {
       console.log(results);
       var customerId = results.rows[0].id;
-      client.query(`INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES ('${customerId}', '${req.params.id}', '${req.body.quantity}', '${orderDate}');`)
+      client.query(`INSERT INTO orders (customer_id, product_id, quantity) VALUES ('${customerId}', '${req.params.id}', '${req.body.quantity}');`)
         .then((results) => {
           let transporter = nodemailer.createTransport({
             host: 'smtp.mail.yahoo.com',
