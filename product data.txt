@@ -60,6 +60,93 @@ We know who we are. We are 64 Audio.
 UIEM
 64 Audio
 
+// NEW PRODUCTS
+
+SP1000
+The A&ultima SP1000 is a one-of-a-kind, high-end, powerful flagship high resolution music player equipped with the latest advanced features.
+The A&ultima SP1000: delivering the ultimate Astell&Kern technology.
+185500.00
+1
+/sp1000.jpg
+
+AK70
+The AK70's DAC, based on market-proven CS4398 chips of Cirrus Logic, has been used for years in Hi-Fi audios and the second-generation Astell&Kern devices.
+The A&ultima SP1000: delivering the ultimate Astell&Kern technology.
+31800.00
+1
+/ak70.jpg
+
+Andromeda
+This flagship earphone exudes a unique confidence in its handling of fine musical detail, expanding the limits your listening horizon. Designed and hand assembled in Portland, Oregon USA.
+Quality components. Fine craftsmanship. World-class audiophile earphones.
+58300.00
+1
+/andromeda.jpg
+
+Lyra
+A single 8.5mm beryllium PVD dynamic driver and a unique liquid metal alloy housing to effortlessly deliver high fidelity music.
+Quality components. Fine craftsmanship. World-class audiophile earphones.
+3200.00
+1
+/lyra.jpg
+
+Dorado
+Dorado is a hybrid design;  Our 8.5mm beryllium PVD dynamic driver is paired with two balanced armatures + T.A.E.C. All captured in a unique liquid metal alloy housing.
+Quality components. Fine craftsmanship. World-class audiophile earphones.
+53000.00
+1
+/dorado.jpg
+
+Cascade
+Unmistakably Campfire Audio Sound. 42mm Beryllium PVD Diaphragm Dynamic Drivers. Aluminum and Stainless Steel Construction
+Quality components. Fine craftsmanship. World-class audiophile earphones.
+42400.00
+1
+/cascade.jpg
+headphone
+
+MDR-Z1R
+Superior sound, tangible quality
+Sit back, relax and prepare to experience a new level of audio excellence. These headphones combine cutting-edge technology with the finest craftsmanship, for the ultimate listening experience.
+Be Moved
+105000.00
+1
+/mdr-z1r.jpg
+headphone
+
+WH-1000XM2
+Incredibly silent, effortlessly smart
+No hassle, no difficult settings, just industry-leading noise cancelation1 tailored for you and your life.
+Be Moved
+18000.00
+1
+/wh-100xm2.jpg
+headphone
+
+NW-WM1A
+The NW-WM1A is a premium Walkman designed for optimal sound quality. Feel every note and nuance with High-Resolution Audio and hear the difference in your music with balanced sound, anywhere you go. 
+Be Moved
+53000.00
+1
+/nw-wm1a.jpg
+
+NW-A45
+Designed to fit your life effortlessly, the NW-A40 Series comes in unique h.ear colors that sync with your style. Enjoy superior sound from High-Resolution Audio and improved BLUETOOTH streaming with LDAC.
+Be Moved
+8000.00
+1
+/nw-a45.jpg
+
+Monk
+A very affordable earbud but kicks way above its price point.
+A bang for the buck product
+250.00
+1
+/monk.jpg
+
+
+
+
 
 
 
@@ -76,7 +163,6 @@ JH Audio
 
 Custom In-Ear Monitor
 Universal In-Ear Monitor
-
 
 FlipEars
 FlipEars is the first Filipino company to manufacture universal and custom in-ear monitors in the country!
