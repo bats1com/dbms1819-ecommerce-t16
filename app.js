@@ -391,10 +391,12 @@ app.post('/admin/categories', function (req, res) { // category list with insert
   });
 });
 
-app.get('/admin/customers', (req, res) => { // MODULE 3 additions
-  Customer.list(client, function (customers) {
+app.get('/admin/customers/page/:id', (req, res) => { // MODULE 3 additions
+  var page = parseInt(req.params.id);
+  Customer.list(client, {page}, function (customers) {
     res.render('customers', {
       data: customers,
+      page: page,
       layout: 'admin'
     });
   });
@@ -417,10 +419,20 @@ app.get('/admin/customers/:id', (req, res) => {
   });
 });
 
-app.get('/admin/orders', (req, res) => {
-  Order.list(client, {}, function (orders) {
+// var page = parseInt(req.params.id);
+//   Product.list(client, {page}, function (products) {
+//     res.render('home_customer', {
+//       data: products,
+//       page: page,
+//       title: 'Top Products'
+//     });
+//   });
+app.get('/admin/orders/page/:id', (req, res) => {
+  var page = parseInt(req.params.id);
+  Order.list(client, {page}, function (orders) {
     res.render('orders', {
       data: orders,
+      page: page,
       layout: 'admin'
     });
   });

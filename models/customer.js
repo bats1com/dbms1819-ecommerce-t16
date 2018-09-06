@@ -4,10 +4,13 @@ var Customer = {
 
   },
 
-  list: function (client, callback) {
+  list: function (client, filter, callback) {
     const listQuery = `
       SELECT *
       FROM customers
+      ORDER BY email
+      LIMIT 10
+      OFFSET ((${filter.page}-1)*10)
     `;
     client.query(listQuery, (req, data) => {
       console.log(data.rows);

@@ -4,6 +4,9 @@ var Order = {
     const listQuery = `
       SELECT *
       FROM orders
+      ORDER BY id
+      LIMIT 10
+      OFFSET ((${filter.page}-1)*10)
     `;
     client.query(listQuery, (req, data) => {
       console.log(data.rows);

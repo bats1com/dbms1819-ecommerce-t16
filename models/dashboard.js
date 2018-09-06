@@ -95,10 +95,11 @@ var Dashboard = {
   },
 
   topThreeMostOrderedBrands: function (client, callback) {
+    // COUNT(product_id) AS number_of_orders
     const query = `
-      SELECT
+      SELECT DISTINCT
         brands.brand_name AS brand_name,
-        COUNT(product_id) AS number_of_orders
+        SUM(orders.quantity) AS number_of_orders
       FROM orders
       INNER JOIN products
       ON products.id = orders.product_id
@@ -118,10 +119,11 @@ var Dashboard = {
   },
 
   topThreeMostOrderedCategories: function (client, callback) {
+    // COUNT(product_id) AS number_of_orders
     const query = `
-      SELECT
+      SELECT DISTINCT
         products_category.category_name AS category_name,
-        COUNT(product_id) AS number_of_orders
+        SUM(orders.quantity) AS number_of_orders
       FROM orders
       INNER JOIN products
       ON products.id = orders.product_id
