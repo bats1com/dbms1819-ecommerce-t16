@@ -14,7 +14,9 @@ var Dashboard = {
         customers.first_name, 
         customers.last_name,
         customers.email
-      ORDER BY COUNT(orders.id) DESC
+      ORDER BY 
+        number_of_orders DESC,
+        first_name ASC
       LIMIT 10
     `;
     client.query(query, (req, data) => {
@@ -54,12 +56,11 @@ var Dashboard = {
     const query = `
       SELECT
         products.product_name AS product_name,
-        COUNT(product_id) AS number_of_orders
-      FROM orders
-      INNER JOIN products
+        COUNT(orders.product_id) AS number_of_orders
+      FROM products
+      LEFT JOIN orders
       ON products.id = orders.product_id
       GROUP BY
-        product_id,
         products.product_name
       ORDER BY 
         number_of_orders DESC,
@@ -76,12 +77,11 @@ var Dashboard = {
     const query = `
       SELECT
         products.product_name AS product_name,
-        COUNT(product_id) AS number_of_orders
-      FROM orders
-      INNER JOIN products
+        COUNT(orders.product_id) AS number_of_orders
+      FROM products
+      LEFT JOIN orders
       ON products.id = orders.product_id
       GROUP BY
-        product_id,
         products.product_name
       ORDER BY 
         number_of_orders ASC,
