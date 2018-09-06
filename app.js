@@ -54,9 +54,22 @@ var Customer = require('./models/customer');
 var Dashboard = require('./models/dashboard');
 
 app.get('/', function (req, res) { // product list
-  Product.list(client, {}, function (products) {
+  var page = parseInt('1');
+  Product.list(client, {page}, function (products) {
     res.render('home_customer', {
       data: products,
+      page: page,
+      title: 'Top Products'
+    });
+  });
+});
+
+app.get('/page/:id', function (req, res) { // product list
+  var page = parseInt(req.params.id);
+  Product.list(client, {page}, function (products) {
+    res.render('home_customer', {
+      data: products,
+      page: page,
       title: 'Top Products'
     });
   });
@@ -96,12 +109,14 @@ app.get('/admin', function (req, res) { // product list
   });
 });
 
-app.get('/admin/products', function (req, res) { // product list
-  Product.list(client, {}, function (products) {
+app.get('/admin/products/page/:id', function (req, res) { // product list
+  var page = parseInt(req.params.id);
+  Product.list(client, {page}, function (products) {
     res.render('home', {
       data: products,
-      title: 'Product List',
-      layout: 'admin'
+      page: page,
+      layout: 'admin',
+      title: 'Top Products'
     });
   });
 });
@@ -153,10 +168,10 @@ app.post('/admin/products', function (req, res) { // product list with insert ne
         layout: 'admin',
         name: 'Products',
         message: 'Product already exists',
-        action: '/admin/products'
+        action: '/admin/products/page/1'
       });
     } else {
-      res.redirect('/admin/products');
+      res.redirect('/admin/products/page/1');
     }
   });
 });

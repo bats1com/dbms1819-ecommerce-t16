@@ -1,10 +1,13 @@
 var Product = {
 
   list: function (client, filter, callback) {
+    console.log(filter.page);
     const productListQuery = `
       SELECT * 
       FROM products 
       ORDER BY products.id
+      LIMIT 10
+      OFFSET ((${filter.page}-1)*10)
     `;
     client.query(productListQuery, (req, data) => {
       console.log(data.rows);
