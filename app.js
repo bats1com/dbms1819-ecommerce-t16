@@ -153,7 +153,7 @@ app.post('/admin/products', function (req, res) { // product list with insert ne
         layout: 'admin',
         name: 'Products',
         message: 'Product already exists',
-        action: '/admin'
+        action: '/admin/products'
       });
     } else {
       res.redirect('/admin/products');

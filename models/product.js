@@ -40,6 +40,7 @@ var Product = {
 
   create: function (client, productData, callback) {
     var error = 0;
+    console.log(productData);
     const insertQuery = `
     INSERT INTO products(product_name, product_description, tagline, price, warranty, pic, category_id, brand_id) 
     VALUES('${productData.product_name}', '${productData.product_description}', '${productData.tagline}', '${productData.price}', '${productData.warranty}', '${productData.pic}', '${productData.category_id}', '${productData.brand_id}')
