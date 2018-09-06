@@ -156,7 +156,7 @@ app.post('/admin/products', function (req, res) { // product list with insert ne
         action: '/admin'
       });
     } else {
-      res.redirect('/admin');
+      res.redirect('/admin/products');
     }
   });
 });
