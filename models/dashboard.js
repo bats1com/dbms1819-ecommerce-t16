@@ -177,7 +177,17 @@ var Dashboard = {
   },
 
   dailyOrderCountForSevenDays: function (client, callback) {
-
+    const query = `
+      SELECT COUNT(orders.id) AS total_orders
+      FROM orders
+      WHERE order_date
+      BETWEEN CURRENT_DATE - INTERVAL '1 days'
+      AND CURRENT_DATE + INTERVAL '1 days'
+       `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
   }
 
 };

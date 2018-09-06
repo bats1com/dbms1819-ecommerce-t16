@@ -71,17 +71,20 @@ app.get('/admin', function (req, res) { // product list
             Dashboard.topThreeMostOrderedCategories(client, function (topThreeMostOrderedCategories) {
               Dashboard.totalSalesInTheLastSevenDays(client, function (totalSalesInTheLastSevenDays) {
                 Dashboard.totalSalesInTheLastThirtyDays(client, function (totalSalesInTheLastThirtyDays) {
-                  res.render('dashboard', {
-                    topTenCustomersWithMostOrders: topTenCustomersWithMostOrders,
-                    topTenCustomersWithHighestPayment: topTenCustomersWithHighestPayment,
-                    topTenMostOrderedProducts: topTenMostOrderedProducts,
-                    topTenLeastOrderedProducts: topTenLeastOrderedProducts,
-                    topThreeMostOrderedBrands: topThreeMostOrderedBrands,
-                    topThreeMostOrderedCategories: topThreeMostOrderedCategories,
-                    totalSalesInTheLastSevenDays: totalSalesInTheLastSevenDays,
-                    totalSalesInTheLastThirtyDays: totalSalesInTheLastThirtyDays,
-                    title: 'Top Products',
-                    layout: 'admin'
+                  Dashboard.dailyOrderCountForSevenDays(client, function (dailyOrderCountForSevenDays) {
+                    res.render('dashboard', {
+                      topTenCustomersWithMostOrders: topTenCustomersWithMostOrders,
+                      topTenCustomersWithHighestPayment: topTenCustomersWithHighestPayment,
+                      topTenMostOrderedProducts: topTenMostOrderedProducts,
+                      topTenLeastOrderedProducts: topTenLeastOrderedProducts,
+                      topThreeMostOrderedBrands: topThreeMostOrderedBrands,
+                      topThreeMostOrderedCategories: topThreeMostOrderedCategories,
+                      totalSalesInTheLastSevenDays: totalSalesInTheLastSevenDays,
+                      totalSalesInTheLastThirtyDays: totalSalesInTheLastThirtyDays,
+                      dailyOrderCountForSevenDays: dailyOrderCountForSevenDays,
+                      title: 'Top Products',
+                      layout: 'admin'
+                    });
                   });
                 });
               });

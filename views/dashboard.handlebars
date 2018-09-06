@@ -167,5 +167,23 @@
         </div>
       </div>
 
+      <h3 align="center">Total Orders for 7 Days</h3>
+      <div class="col-lg-8 col-md-8 col-sm-8 mb-2 mx-auto">
+        <div class="card bg-secondary text-light center">
+          <table style="width:80%" class="table table-sm mx-auto">
+            <tr>
+              <th>Total Orders</th>
+            </tr>
+            {{#each dailyOrderCountForSevenDays}}
+            <tr>
+              <td>
+                {{this.total_orders}}
+              </td>
+            </tr>
+           {{/each}}
+          </table>
+        </div>
+      </div>
+
   </div>
 </div>
