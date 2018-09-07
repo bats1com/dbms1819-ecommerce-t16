@@ -67,6 +67,17 @@ var Order = {
       callback(error);
     });
     */
+  },
+
+  getTotal: function (client, callback) {
+    const query = `
+      SELECT COUNT(*)
+      FROM orders
+    `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
   }
 
 };

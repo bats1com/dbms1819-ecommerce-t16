@@ -25,9 +25,18 @@
           Page {{page}}
         </h5>
         <h5>
-          <a href="/admin/orders/page/1">1</a> -
-          <a href="/admin/orders/page/2">2</a> -
-          <a href="/admin/orders/page/3">3</a>
+          {{#each pages}}
+          - <a href="/admin/orders/page/{{this}}">{{this}}</a>
+          {{/each}}
+          -
+        </h5>
+        <h5>
+          {{#if prevPage}}
+          <a href="/admin/orders/page/{{prevPage}}">Previous</a>
+          {{/if}}
+          {{#if nextPage}}
+          <a href="/admin/orders/page/{{nextPage}}">Next</a>
+          {{/if}}
         </h5>
       </center>
 		</div>

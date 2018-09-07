@@ -36,6 +36,17 @@ var Customer = {
       callback(error);
     });
     */
+  },
+
+  getTotal: function (client, callback) {
+    const query = `
+      SELECT COUNT(*)
+      FROM customers
+    `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
   }
 
 };

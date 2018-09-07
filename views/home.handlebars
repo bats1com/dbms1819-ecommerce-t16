@@ -20,8 +20,18 @@
         Page {{page}}
       </h3>
       <h3>
-        <a href="/admin/products/page/1">1</a> -
-        <a href="/admin/products/page/2">2</a>
+        {{#each pages}}
+        - <a href="/admin/products/page/{{this}}">{{this}}</a>
+        {{/each}}
+        -
+      </h3>
+      <h3>
+        {{#if prevPage}}
+        <a href="/admin/products/page/{{prevPage}}">Previous</a>
+        {{/if}}
+        {{#if nextPage}}
+        <a href="/admin/products/page/{{nextPage}}">Next</a>
+        {{/if}}
       </h3>
      </center>
 		<div class="row text-center">

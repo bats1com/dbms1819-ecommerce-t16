@@ -53,23 +53,67 @@ var Order = require('./models/order');
 var Customer = require('./models/customer');
 var Dashboard = require('./models/dashboard');
 
-app.get('/', function (req, res) { // product list
-  var page = parseInt('1');
-  Product.list(client, {page}, function (products) {
-    res.render('home_customer', {
-      data: products,
-      page: page,
-      title: 'Top Products'
-    });
+app.get('/login', function (req, res) {
+  res.render('login', {
   });
+});
+
+app.post('/login', function (req, res) {
+  console.log('login data', req.body);
+  // find customer by email
+  // validate password saved in db to provided password
+  res.render('login', {
+  });
+});
+
+app.get('/signup', function (req, res) {
+  res.render('signup', {
+  });
+});
+
+app.post('/signup', function (req, res) {
+  console.log('signup data', req.body);
+  res.render('signup', {
+  });
+});
+
+app.get('/', function (req, res) { // product list
+  res.redirect('/page/1');
 });
 
 app.get('/page/:id', function (req, res) { // product list
   var page = parseInt(req.params.id);
+  var totalItems;
+  var totalPage;
+  var prevPage;
+  var nextPage;
+  var lastPage;
+  var pages = [];
+  Product.getTotal(client, function (total) {
+    totalItems = total[0].count;
+    totalPage = totalItems / 10;
+    for (var i = 1; i < totalPage + 1; i++) {
+      pages[i - 1] = i;
+      lastPage = i;
+    };
+    if (page === 1) {
+      prevPage = 0;
+      nextPage = 2;
+    } else if (page > 1 && page < lastPage) {
+      prevPage = page - 1;
+      nextPage = page + 1;
+    } else {
+      prevPage = lastPage - 1;
+      nextPage = 0;
+    }
+  });
   Product.list(client, {page}, function (products) {
     res.render('home_customer', {
       data: products,
       page: page,
+      pages: pages,
+      prevPage: prevPage,
+      nextPage: nextPage,
       title: 'Top Products'
     });
   });
@@ -111,10 +155,37 @@ app.get('/admin', function (req, res) { // product list
 
 app.get('/admin/products/page/:id', function (req, res) { // product list
   var page = parseInt(req.params.id);
+  var totalItems;
+  var totalPage;
+  var prevPage;
+  var nextPage;
+  var lastPage;
+  var pages = [];
+  Product.getTotal(client, function (total) {
+    totalItems = total[0].count;
+    totalPage = totalItems / 10;
+    for (var i = 1; i < totalPage + 1; i++) {
+      pages[i - 1] = i;
+      lastPage = i;
+    };
+    if (page === 1) {
+      prevPage = 0;
+      nextPage = 2;
+    } else if (page > 1 && page < lastPage) {
+      prevPage = page - 1;
+      nextPage = page + 1;
+    } else {
+      prevPage = lastPage - 1;
+      nextPage = 0;
+    }
+  });
   Product.list(client, {page}, function (products) {
     res.render('home', {
       data: products,
       page: page,
+      pages: pages,
+      prevPage: prevPage,
+      nextPage: nextPage,
       layout: 'admin',
       title: 'Top Products'
     });
@@ -393,10 +464,37 @@ app.post('/admin/categories', function (req, res) { // category list with insert
 
 app.get('/admin/customers/page/:id', (req, res) => { // MODULE 3 additions
   var page = parseInt(req.params.id);
+  var totalItems;
+  var totalPage;
+  var prevPage;
+  var nextPage;
+  var lastPage;
+  var pages = [];
+  Customer.getTotal(client, function (total) {
+    totalItems = total[0].count;
+    totalPage = totalItems / 10;
+    for (var i = 1; i < totalPage + 1; i++) {
+      pages[i - 1] = i;
+      lastPage = i;
+    };
+    if (page === 1) {
+      prevPage = 0;
+      nextPage = 2;
+    } else if (page > 1 && page < lastPage) {
+      prevPage = page - 1;
+      nextPage = page + 1;
+    } else {
+      prevPage = lastPage - 1;
+      nextPage = 0;
+    }
+  });
   Customer.list(client, {page}, function (customers) {
     res.render('customers', {
       data: customers,
       page: page,
+      pages: pages,
+      prevPage: prevPage,
+      nextPage: nextPage,
       layout: 'admin'
     });
   });
@@ -419,20 +517,45 @@ app.get('/admin/customers/:id', (req, res) => {
   });
 });
 
-// var page = parseInt(req.params.id);
-//   Product.list(client, {page}, function (products) {
-//     res.render('home_customer', {
-//       data: products,
-//       page: page,
-//       title: 'Top Products'
-//     });
-//   });
-app.get('/admin/orders/page/:id', (req, res) => {
+app.get('/admin/orders/page/:id', (req, res) => { // ---------------------------
   var page = parseInt(req.params.id);
+  var totalItems;
+  var totalPage;
+  var prevPage;
+  var nextPage;
+  var lastPage;
+  var pages = [];
+  Order.getTotal(client, function (total) {
+    totalItems = total[0].count;
+    console.log('aw');
+    console.log(totalItems);
+    totalPage = totalItems / 10;
+    for (var i = 1; i < totalPage + 1; i++) {
+      pages[i - 1] = i;
+      lastPage = i;
+    };
+    if (page === 1) {
+      prevPage = 0;
+      nextPage = 2;
+    } else if (page > 1 && page < lastPage) {
+      prevPage = page - 1;
+      nextPage = page + 1;
+    } else {
+      prevPage = lastPage - 1;
+      nextPage = 0;
+    }
+    console.log('page', page);
+    console.log('prevp', prevPage);
+    console.log('next', nextPage);
+  });
+
   Order.list(client, {page}, function (orders) {
     res.render('orders', {
       data: orders,
       page: page,
+      pages: pages,
+      prevPage: prevPage,
+      nextPage: nextPage,
       layout: 'admin'
     });
   });

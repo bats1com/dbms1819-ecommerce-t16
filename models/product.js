@@ -87,6 +87,17 @@ var Product = {
         error = 1;
         callback(error);
       });
+  },
+
+  getTotal: function (client, callback) {
+    const query = `
+      SELECT COUNT(*)
+      FROM products
+    `;
+    client.query(query, (req, data) => {
+      console.log(data.rows);
+      callback(data.rows);
+    });
   }
 
 };
