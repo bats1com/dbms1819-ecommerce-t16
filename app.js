@@ -4,9 +4,9 @@ const { Client } = require('pg');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-// const moment = require('moment-timezone');
 const PORT = process.env.PORT || 5000; // test
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+// const moment = require('moment-timezone');
 // const hbs = require('nodemailer-express-handlebars');
 // const url = require('url'); not used
 
