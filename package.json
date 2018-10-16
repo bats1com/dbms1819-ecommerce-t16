@@ -22,10 +22,14 @@
   "author": "Jomar Vista",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
+    "flash": "^1.1.0",
     "handlebars": "^4.0.11",
     "local": "^0.3.3",
     "moment": "^2.22.2",
@@ -33,7 +37,9 @@
     "nodemailer": "^4.6.7",
     "nodemailer-express-handlebars": "^3.0.0",
     "passport": "^0.4.0",
-    "pg": "^7.4.3"
+    "passport-local": "^1.0.0",
+    "pg": "^7.4.3",
+    "session": "^0.1.0"
   },
   "repository": {
     "type": "git",

@@ -9,6 +9,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 // const moment = require('moment-timezone');
 // const hbs = require('nodemailer-express-handlebars');
 // const url = require('url'); not used
+// const cookieParser = require('cookie-parser');
+// var flash = require('connect-flash');
+// const session = require('express-session');
+const passport = require('passport');
+const Strategy = require('passport-local').Strategy;
+// const bcrypt = require('bcryptjs');
 
 const client = new Client({
   database: 'ddmihcu0i9oh4g',
@@ -53,6 +59,46 @@ var Order = require('./models/order');
 var Customer = require('./models/customer');
 var Dashboard = require('./models/dashboard');
 
+// login--------------------------------------------
+passport.use(new Strategy({
+  usernameField: 'email',
+  passwordField: 'password'
+},
+function (email, password, cb) {
+  Customer.getByEmail(client, email, function (user) {
+    if (!user) { return cb(null, false); }
+    return cb(null, user);
+  });
+})
+);
+
+passport.serializeUser(function (user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function (id, cb) {
+  Customer.getById(client, id, function (user) {
+    cb(null, user);
+  });
+});
+
+// function isAdmin (req, res, next) {
+//   if (req.isAuthenticated()) {
+//     Customer.getCustomerData(client,{id: req.user.id}, function (user){
+//       role = user[0].user_type;
+//       console.log('role:',role);
+//       if (role == 'admin') {
+//           return next();
+//       } else {
+//         res.send('cannot access!');
+//       }
+//     });
+//   }
+//   else{
+//     res.redirect('/login');
+//   }
+// };
+
 app.get('/login', function (req, res) {
   res.render('login', {
   });
@@ -62,8 +108,20 @@ app.post('/login', function (req, res) {
   console.log('login data', req.body);
   // find customer by email
   // validate password saved in db to provided password
-  res.render('login', {
-  });
+  passport.authenticate('local', { failureRedirect: '/login' },
+    function (req, res) {
+      Customer.getById(client, req.user.id, function (user) {
+        var role = user.user_type;
+        req.session.user = user;
+        console.log(req.session.user);
+        console.log('role:', role);
+        if (role === 'customer') {
+          res.redirect('/');
+        } else if (role === 'admin') {
+          res.redirect('/admin');
+        }
+      });
+    });
 });
 
 app.get('/signup', function (req, res) {
