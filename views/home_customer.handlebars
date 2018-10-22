@@ -1,5 +1,8 @@
 <div class="container">
   <div class="jumbotron mt-2">
+    {{#if customer}}
+    Welcome {{first_name}} {{last_name}}
+    {{/if}}
     <h1 class="mt-0 mb-5 text-center">{{title}}</h1>
     <div class="row mx-4">
       {{#each data}}

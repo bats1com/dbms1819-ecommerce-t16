@@ -97,7 +97,7 @@ function isAdmin (req, res, next) {
       if (role === 'admin') {
         return next();
       } else {
-        res.send('cannot access!');
+        res.redirect('/login');
       }
     });
   } else {
@@ -145,6 +145,13 @@ app.get('/', function (req, res) { // product list
 });
 
 app.get('/page/:id', function (req, res) { // product list
+  var customer = false;
+
+  if (req.isAuthenticated()) {
+    if (req.user.user_type === 'customer') {
+      customer = true;
+    }
+  }
   var page = parseInt(req.params.id);
   var totalItems;
   var totalPage;
@@ -170,16 +177,32 @@ app.get('/page/:id', function (req, res) { // product list
       nextPage = 0;
     }
   });
-  Product.list(client, {page}, function (products) {
-    res.render('home_customer', {
-      data: products,
-      page: page,
-      pages: pages,
-      prevPage: prevPage,
-      nextPage: nextPage,
-      title: 'Top Products'
+  if (customer) {
+    Product.list(client, {page}, function (products) {
+      res.render('home_customer', {
+        data: products,
+        page: page,
+        pages: pages,
+        prevPage: prevPage,
+        nextPage: nextPage,
+        title: 'Top Products',
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        customer: customer
+      });
     });
-  });
+  } else {
+    Product.list(client, {page}, function (products) {
+      res.render('home_customer', {
+        data: products,
+        page: page,
+        pages: pages,
+        prevPage: prevPage,
+        nextPage: nextPage,
+        title: 'Top Products'
+      });
+    });
+  }
 });
 
 app.get('/admin', isAdmin, function (req, res) { // product list
@@ -293,7 +316,7 @@ app.get('/products/:id', (req, res) => {
   }
 });
 
-app.get('/admin/product/create', (req, res) => { // CREATE PRODUCT html
+app.get('/admin/product/create', isAdmin, (req, res) => { // CREATE PRODUCT html
   Category.list(client, {}, function (categories) {
     Brand.list(client, {}, function (brands) {
       res.render('product_create', {
@@ -305,7 +328,7 @@ app.get('/admin/product/create', (req, res) => { // CREATE PRODUCT html
   });
 });
 
-app.get('/admin/products/:id', (req, res) => {
+app.get('/admin/products/:id', isAdmin, (req, res) => {
   Product.getById(client, req.params.id, function (productData) {
     res.render('products', {
       data: productData,
@@ -314,7 +337,7 @@ app.get('/admin/products/:id', (req, res) => {
   });
 });
 
-app.post('/admin/products', function (req, res) { // product list with insert new product
+app.post('/admin/products', isAdmin, function (req, res) { // product list with insert new product
   var productData = {
     product_name: req.body.product_name,
     product_description: req.body.product_description,
@@ -340,7 +363,7 @@ app.post('/admin/products', function (req, res) { // product list with insert ne
   });
 });
 
-app.get('/admin/products/update/:id', (req, res) => {
+app.get('/admin/products/update/:id', isAdmin, (req, res) => {
   Product.getById(client, req.params.id, function (products) {
     Category.list(client, {}, function (categories) {
       Brand.list(client, {}, function (brands) {
@@ -355,7 +378,7 @@ app.get('/admin/products/update/:id', (req, res) => {
   });
 });
 
-app.post('/admin/products/:id', function (req, res) {
+app.post('/admin/products/:id', isAdmin, function (req, res) {
   console.log(req.body);
   var id = parseInt(req.params.id);
   var productData = {
@@ -483,7 +506,7 @@ app.get('/brands', (req, res) => { // brand list
   });
 });
 
-app.get('/admin/brands', (req, res) => { // brand list
+app.get('/admin/brands', isAdmin, (req, res) => { // brand list
   Brand.list(client, {}, function (brands) {
     res.render('brands', {
       data: brands,
@@ -492,13 +515,13 @@ app.get('/admin/brands', (req, res) => { // brand list
   });
 });
 
-app.get('/admin/brand/create', (req, res) => { // route to create brand html
+app.get('/admin/brand/create', isAdmin, (req, res) => { // route to create brand html
   res.render('brand_create', {
     layout: 'admin'
   });
 });
 
-app.post('/admin/brands', function (req, res) { // brand list insert
+app.post('/admin/brands', isAdmin, function (req, res) { // brand list insert
   var brandData = {
     brand_name: req.body.brand_name,
     brand_description: req.body.brand_description
@@ -525,7 +548,7 @@ app.get('/categories', (req, res) => { // category list
   });
 });
 
-app.get('/admin/categories', (req, res) => { // category list
+app.get('/admin/categories', isAdmin, (req, res) => { // category list
   Category.list(client, {}, function (categories) {
     res.render('categories', {
       data: categories,
@@ -534,13 +557,13 @@ app.get('/admin/categories', (req, res) => { // category list
   });
 });
 
-app.get('/admin/category/create', (req, res) => { // route to create category
+app.get('/admin/category/create', isAdmin, (req, res) => { // route to create category
   res.render('category_create', {
     layout: 'admin'
   });
 });
 
-app.post('/admin/categories', function (req, res) { // category list with insert new category query
+app.post('/admin/categories', isAdmin, function (req, res) { // category list with insert new category query
   Category.create(client, req.body.category_name, function (error) {
     if (error === 1) {
       res.render('duplicate', {
@@ -555,7 +578,7 @@ app.post('/admin/categories', function (req, res) { // category list with insert
   });
 });
 
-app.get('/admin/customers/page/:id', (req, res) => { // MODULE 3 additions
+app.get('/admin/customers/page/:id', isAdmin, (req, res) => { // MODULE 3 additions
   var page = parseInt(req.params.id);
   var totalItems;
   var totalPage;
@@ -593,7 +616,7 @@ app.get('/admin/customers/page/:id', (req, res) => { // MODULE 3 additions
   });
 });
 
-app.get('/admin/customers/:id', (req, res) => {
+app.get('/admin/customers/:id', isAdmin, (req, res) => {
   Order.listByCustomerId(client, req.params.id, function (orderData) {
     res.render('customer_details', {
       data: orderData,
@@ -610,7 +633,7 @@ app.get('/admin/customers/:id', (req, res) => {
   });
 });
 
-app.get('/admin/orders/page/:id', (req, res) => { // ---------------------------
+app.get('/admin/orders/page/:id', isAdmin, (req, res) => { // ---------------------------
   var page = parseInt(req.params.id);
   var totalItems;
   var totalPage;
