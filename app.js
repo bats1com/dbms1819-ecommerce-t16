@@ -11,7 +11,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 // const url = require('url'); not used
 // const cookieParser = require('cookie-parser');
 // var flash = require('connect-flash');
-// const session = require('express-session');
+const session = require('express-session');
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 // const bcrypt = require('bcryptjs');
@@ -44,12 +44,19 @@ client.connect()
 
 // View engine setup
 const app = express();
+var role;
+
+app.use(session({ secret: 'iem', resave: false, saveUninitialized: false }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 // Body Parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // require .js from other files
 var Product = require('./models/product');
@@ -82,46 +89,42 @@ passport.deserializeUser(function (id, cb) {
   });
 });
 
-// function isAdmin (req, res, next) {
-//   if (req.isAuthenticated()) {
-//     Customer.getCustomerData(client,{id: req.user.id}, function (user){
-//       role = user[0].user_type;
-//       console.log('role:',role);
-//       if (role == 'admin') {
-//           return next();
-//       } else {
-//         res.send('cannot access!');
-//       }
-//     });
-//   }
-//   else{
-//     res.redirect('/login');
-//   }
-// };
+function isAdmin (req, res, next) {
+  if (req.isAuthenticated()) {
+    Customer.getCustomerData(client, {id: req.user.id}, function (user) {
+      role = user[0].user_type;
+      console.log('role:', role);
+      if (role === 'admin') {
+        return next();
+      } else {
+        res.send('cannot access!');
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
 
 app.get('/login', function (req, res) {
   res.render('login', {
   });
 });
 
-app.post('/login', function (req, res) {
-  console.log('login data', req.body);
+app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function (req, res) {
+  // console.log('login data', req.body);
   // find customer by email
   // validate password saved in db to provided password
-  passport.authenticate('local', { failureRedirect: '/login' },
-    function (req, res) {
-      Customer.getById(client, req.user.id, function (user) {
-        var role = user.user_type;
-        req.session.user = user;
-        console.log(req.session.user);
-        console.log('role:', role);
-        if (role === 'customer') {
-          res.redirect('/');
-        } else if (role === 'admin') {
-          res.redirect('/admin');
-        }
-      });
-    });
+  Customer.getById(client, req.user.id, function (user) {
+    role = user.user_type;
+    req.session.user = user;
+    console.log(req.session.user);
+    console.log('role:', role);
+    if (role === 'customer') {
+      res.redirect('/');
+    } else if (role === 'admin') {
+      res.redirect('/admin');
+    }
+  });
 });
 
 app.get('/signup', function (req, res) {
@@ -131,8 +134,10 @@ app.get('/signup', function (req, res) {
 
 app.post('/signup', function (req, res) {
   console.log('signup data', req.body);
-  res.render('signup', {
-  });
+  client.query("INSERT INTO customers (first_name, last_name, email, street, municipality, province, zipcode, password, user_type) VALUES ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.email + "', '" + req.body.street + "', '" + req.body.municipality + "', '" + req.body.province + "', '" + req.body.zipcode + "', '" + req.body.password + "', 'customer')")
+    .then((results) => {
+      res.redirect('/login');
+    });
 });
 
 app.get('/', function (req, res) { // product list
@@ -177,7 +182,7 @@ app.get('/page/:id', function (req, res) { // product list
   });
 });
 
-app.get('/admin', function (req, res) { // product list
+app.get('/admin', isAdmin, function (req, res) { // product list
   Dashboard.topTenCustomersWithMostOrders(client, function (topTenCustomersWithMostOrders) {
     Dashboard.topTenCustomersWithHighestPayment(client, function (topTenCustomersWithHighestPayment) {
       Dashboard.topTenMostOrderedProducts(client, function (topTenMostOrderedProducts) {
@@ -211,7 +216,7 @@ app.get('/admin', function (req, res) { // product list
   });
 });
 
-app.get('/admin/products/page/:id', function (req, res) { // product list
+app.get('/admin/products/page/:id', isAdmin, function (req, res) { // product list
   var page = parseInt(req.params.id);
   var totalItems;
   var totalPage;
@@ -251,11 +256,41 @@ app.get('/admin/products/page/:id', function (req, res) { // product list
 });
 
 app.get('/products/:id', (req, res) => {
-  Product.getById(client, req.params.id, function (productData) {
-    res.render('products_customer', {
-      data: productData
+  var customer = false;
+  var login = true;
+
+  if (req.isAuthenticated()) {
+    if (req.user.user_type === 'customer') {
+      customer = true;
+      login = false;
+    }
+  }
+  if (login) {
+    Product.getById(client, req.params.id, function (productData) {
+      res.render('products_customer', {
+        data: productData,
+        productId: req.params.id,
+        customer: customer,
+        login: login
+      });
     });
-  });
+  } else {
+    Product.getById(client, req.params.id, function (productData) {
+      res.render('products_customer', {
+        data: productData,
+        productId: req.params.id,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        email: req.user.email,
+        street: req.user.street,
+        municipality: req.user.municipality,
+        province: req.user.province,
+        zipcode: req.user.zipcode,
+        customer: customer,
+        login: login
+      });
+    });
+  }
 });
 
 app.get('/admin/product/create', (req, res) => { // CREATE PRODUCT html

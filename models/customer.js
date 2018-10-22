@@ -13,8 +13,8 @@ var Customer = {
     const query = `
       select * from customers where email = '${email}'
     `;
-    client.query(query, (req, result) => {
-      callback(result.rows[0]);
+    client.query(query, (req, data) => {
+      callback(data.rows[0]);
     });
   },
 
@@ -30,34 +30,6 @@ var Customer = {
       console.log(data.rows);
       callback(data.rows);
     });
-  },
-
-  createCustomer: function (client, customerData, callback) {
-    customerData = [customerData.email, customerData.fName, customerData.lName, customerData.street, customerData.mun, customerData.prov, customerData.zip, customerData.pass, customerData.userType];
-    const query = `
-      INSERT INTO customers (email, first_name, last_name, street, municipality, province, zipcode, password, user_type) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    `;
-    client.query(query, customerData);
-    // .then(res => callback('SUCCESS'))
-    // .catch(e => callback('ERROR'))
-    /*
-    var error = 0;
-    const insertQuery = `
-    INSERT INTO brands(brand_name, brand_description)
-    VALUES('${brandData.brand_name}', '${brandData.brand_description}')
-    `;
-    client.query(insertQuery)
-    .then((result) =>{
-      console.log('Inserted');
-      callback(error);
-    })
-    .catch((err) => {
-      console.log('error', err);
-      error = 1;
-      callback(error);
-    });
-    */
   },
 
   getCustomerData: (client, id, callback) => {

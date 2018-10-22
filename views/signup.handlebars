@@ -1,21 +1,64 @@
-<div>
-  <div>
-  <form action="signup" method="POST" accept-charset="utf-8">
-    <div>
-      <input type="text" name="first_name" placeholder="First Name">
-    </div>
-    <div>
-      <input type="text" name="last_name" placeholder="Last Name">
-    </div>
-    <div>
-      <input type="email" name="email" placeholder="email">
-    </div>
-    <div>
-      <input type="password" name="password" placeholder="Password">
-    </div>
-    <div>
-      <button type="submit">Sign Up</button>
-    </div>
-  </form>
+<div class="container pb-5 mb-5">
+  <div class="jumbotron mt-2">
+    <h2>Signup Form</h2>
+    <form action="signup" method="POST" accept-charset="utf-8">
+      <div class="controls">
+        <div class="form-group">
+          <label class="control-label" for="first_name">First Name *</label>
+          <div>
+            <input id="first_name" name="first_name" type="text" placeholder="Juan" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="last_name">Last Name *</label>
+          <div>
+            <input id="last_name" name="last_name" type="text" placeholder="Dela Cruz" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="email">Email *</label>
+          <div>
+            <input id="email" name="email" type="text" placeholder="jdelacruz@gmail.com" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="email">Password *</label>
+          <div>
+            <input id="email" name="password" type="password" placeholder="12345" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="street">Street *</label>
+          <div>
+            <input id="street" name="street" type="text" placeholder="Masipag Street" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="municipality">Municipality *</label>
+          <div>
+            <input id="municipality" name="municipality" type="text" placeholder="Manila" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="province">Province *</label>
+          <div>
+            <input id="province" name="province" type="text" placeholder="NCR" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="zipcode">Zip Code *</label>
+          <div>
+            <input id="zipcode" name="zipcode" type="text" placeholder="1500" class="form-control" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg" title="Sign Up form">
+            Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
